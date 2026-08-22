@@ -1,0 +1,310 @@
+/* ==========================================================
+   NEW WOODLAND HOTEL — ADMIN PANEL STYLESHEET
+   Shares the emerald/gold palette defined in style.css
+========================================================== */
+
+:root {
+    --emerald: #0f6b45;
+    --emerald-dark: #0a4d32;
+    --gold: #d4af37;
+    --ink: #1c2a24;
+    --muted: #6b7a74;
+    --cream: #faf8f2;
+}
+
+body.admin-body {
+    font-family: 'Poppins', sans-serif;
+    background: #f4f6f5;
+    color: var(--ink);
+}
+
+/* ===================== LOGIN ===================== */
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--emerald-dark), var(--emerald));
+    padding: 1.5rem;
+}
+
+.login-card {
+    background: #fff;
+    border-radius: 1rem;
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 30px 70px rgba(0, 0, 0, .3);
+}
+
+.login-card .brand-text {
+    font-family: 'Playfair Display', serif;
+    color: var(--emerald);
+    text-align: center;
+    display: block;
+    font-size: 1.6rem;
+    margin-bottom: .25rem;
+}
+
+/* ===================== DASHBOARD LAYOUT ===================== */
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 260px;
+    flex-shrink: 0;
+    background: var(--emerald-dark);
+    color: #e8f3ee;
+    padding: 1.5rem 1rem;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.sidebar .brand-text {
+    font-family: 'Playfair Display', serif;
+    color: #fff;
+    font-size: 1.3rem;
+    display: block;
+    padding: .5rem .75rem 1.5rem;
+}
+
+.sidebar .brand-text span { color: var(--gold); }
+
+.sidebar-nav { list-style: none; padding: 0; margin: 0; }
+
+.sidebar-nav a {
+    display: flex;
+    align-items: center;
+    gap: .65rem;
+    padding: .7rem .9rem;
+    border-radius: .6rem;
+    color: rgba(255, 255, 255, .8);
+    margin-bottom: .2rem;
+    font-size: .92rem;
+}
+
+.sidebar-nav a:hover,
+.sidebar-nav a.active {
+    background: rgba(255, 255, 255, .1);
+    color: #fff;
+}
+
+.sidebar-nav a.active { border-left: 3px solid var(--gold); }
+
+.sidebar-nav .badge-count {
+    margin-left: auto;
+    background: var(--gold);
+    color: #201a06;
+    font-size: .7rem;
+    padding: .1rem .5rem;
+    border-radius: 50px;
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 2rem;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+.admin-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.admin-topbar h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    margin: 0;
+}
+
+.notification-bell {
+    position: relative;
+    font-size: 1.3rem;
+    color: var(--emerald);
+}
+
+.notification-bell .badge-count {
+    position: absolute;
+    top: -6px;
+    right: -10px;
+    background: #d9534f;
+    color: #fff;
+    font-size: .65rem;
+    padding: .1rem .4rem;
+    border-radius: 50px;
+}
+
+/* ===================== SUMMARY CARDS ===================== */
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.summary-card {
+    background: #fff;
+    border-radius: .9rem;
+    padding: 1.5rem;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, .05);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.summary-card .icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15, 107, 69, .1);
+    color: var(--emerald);
+    font-size: 1.4rem;
+    flex-shrink: 0;
+}
+
+.summary-card .value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: 'Playfair Display', serif;
+}
+
+.summary-card .label { color: var(--muted); font-size: .85rem; }
+
+/* ===================== TABLE SECTION ===================== */
+.table-section {
+    background: #fff;
+    border-radius: .9rem;
+    padding: 1.5rem;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, .05);
+    margin-bottom: 2rem;
+    overflow-x: auto;
+}
+
+.table-section h2, .table-section h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    margin-bottom: 1rem;
+}
+
+.table-section table { width: 100%; }
+.table-section th { color: var(--muted); font-size: .78rem; text-transform: uppercase; border-bottom: 2px solid #f0f0f0; padding: .6rem; }
+.table-section td { padding: .7rem .6rem; border-bottom: 1px solid #f4f4f4; vertical-align: middle; }
+
+/* ===================== STATUS BADGES (shared with style.css) ===================== */
+.status {
+    display: inline-block;
+    padding: .3rem .8rem;
+    border-radius: 50px;
+    font-size: .75rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.status.pending { background: #fff3cd; color: #8a6400; }
+.status.confirmed { background: #d4edda; color: #14532d; }
+.status.cancelled { background: #f8d7da; color: #7a1e2b; }
+
+/* ===================== FORMS ===================== */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.25rem;
+}
+
+.form-grid .full-width { grid-column: 1 / -1; }
+
+.admin-panel {
+    background: #fff;
+    border-radius: .9rem;
+    padding: 1.75rem;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, .05);
+}
+
+.upload-box {
+    border: 2px dashed #d8dfdc;
+    border-radius: .8rem;
+    padding: 2rem;
+    text-align: center;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all .2s ease;
+}
+
+.upload-box:hover, .upload-box.dragover {
+    border-color: var(--emerald);
+    background: rgba(15, 107, 69, .04);
+}
+
+.upload-box img.preview {
+    max-width: 100%;
+    max-height: 180px;
+    border-radius: .5rem;
+    margin-top: 1rem;
+}
+
+/* ===================== GALLERY ===================== */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+}
+
+.gallery-grid .gallery-card {
+    background: #fff;
+    border-radius: .7rem;
+    overflow: hidden;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, .06);
+}
+
+.gallery-grid .gallery-card img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+}
+
+.gallery-grid .gallery-card .body { padding: .75rem; }
+.gallery-grid .gallery-card .actions { display: flex; gap: .4rem; padding: 0 .75rem .75rem; }
+
+/* ===================== BUTTONS ===================== */
+.btn-admin-primary {
+    background: var(--emerald);
+    color: #fff;
+    border: none;
+    border-radius: .5rem;
+    padding: .55rem 1.25rem;
+    font-weight: 600;
+}
+
+.btn-admin-primary:hover { background: var(--emerald-dark); color: #fff; }
+
+.btn-admin-gold {
+    background: var(--gold);
+    color: #201a06;
+    border: none;
+    border-radius: .5rem;
+    padding: .55rem 1.25rem;
+    font-weight: 600;
+}
+
+/* ===================== PAGINATION ===================== */
+.pagination { margin-top: 1.5rem; }
+.pagination .page-link { color: var(--emerald); }
+.pagination .active .page-link { background: var(--emerald); border-color: var(--emerald); }
+
+@media (max-width: 991.98px) {
+    .dashboard-container { flex-direction: column; }
+    .sidebar { width: 100%; height: auto; position: static; }
+    .main-content { padding: 1.25rem; }
+}
