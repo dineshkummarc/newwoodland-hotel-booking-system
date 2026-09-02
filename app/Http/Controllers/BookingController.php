@@ -7,6 +7,7 @@ use App\Models\Booking;
 use App\Models\Room;
 use App\Services\BookingService;
 use App\Services\SettingsService;
+use Illuminate\Support\Facades\Auth;
 
 class BookingController extends Controller
 {
@@ -22,6 +23,7 @@ class BookingController extends Controller
         $room = $request->room();
 
         $booking = $bookingService->create($room, [
+            'user_id' => Auth::id(),
             'check_in' => $request->validated('check_in'),
             'check_out' => $request->validated('check_out'),
             'guests_label' => $request->validated('guests_label'),

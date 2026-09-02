@@ -15,16 +15,18 @@ return Application::configure(basePath: dirname(__DIR__))
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
+
         $middleware->redirectGuestsTo(function ($request) {
             return $request->is('admin*')
                 ? route('admin.login')
-                : route('home');
+                : route('login');
         });
 
         $middleware->redirectUsersTo(function ($request) {
             return $request->is('admin*')
                 ? route('admin.dashboard')
-                : route('home');
+                : route('account.bookings');
         });
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -59,6 +59,7 @@ class BookingService
 
             $booking = Booking::create([
                 'confirmation_code' => $this->generateConfirmationCode(),
+                'user_id' => $data['user_id'] ?? null,
                 'room_id' => $room->id,
                 'check_in' => $checkIn->toDateString(),
                 'check_out' => $checkOut->toDateString(),

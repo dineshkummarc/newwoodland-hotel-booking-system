@@ -20,7 +20,7 @@ class Booking extends Model
     public const BLOCKING_STATUSES = [self::STATUS_PENDING, self::STATUS_CONFIRMED];
 
     protected $fillable = [
-        'confirmation_code', 'room_id', 'check_in', 'check_out', 'nights',
+        'confirmation_code', 'user_id', 'room_id', 'check_in', 'check_out', 'nights',
         'guests_label', 'customer_name', 'email', 'phone', 'country',
         'special_requests', 'nightly_rate', 'total_price', 'status',
     ];
@@ -38,6 +38,11 @@ class Booking extends Model
     public function room(): BelongsTo
     {
         return $this->belongsTo(Room::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function getRouteKeyName(): string

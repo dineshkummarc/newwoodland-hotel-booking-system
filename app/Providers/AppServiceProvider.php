@@ -25,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        View::composer(['partials.header', 'partials.footer', 'home', 'contact'], SettingsComposer::class);
+        View::composer(['partials.header', 'partials.footer', 'home', 'contact', 'terms-condition', 'privacy-policy'], SettingsComposer::class);
         View::composer('layouts.admin', AdminNavComposer::class);
 
         RateLimiter::for('booking-submit', function (Request $request) {
@@ -38,6 +38,10 @@ class AppServiceProvider extends ServiceProvider
 
         RateLimiter::for('admin-login', function (Request $request) {
             return Limit::perMinute(5)->by($request->ip().'|'.$request->input('email'));
+        });
+
+        RateLimiter::for('auth-attempt', function (Request $request) {
+            return Limit::perMinute(6)->by($request->ip().'|'.$request->input('email'));
         });
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AccountController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\FacilityController;
@@ -31,6 +33,22 @@ Route::post('/booking', [BookingController::class, 'store'])
     ->name('booking.store');
 Route::get('/booking/confirmation/{booking:confirmation_code}', [BookingController::class, 'confirmation'])
     ->name('booking.confirmation');
+
+Route::middleware('guest')->group(function () {
+    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('/register', [AuthController::class, 'register'])
+        ->middleware('throttle:auth-attempt')
+        ->name('register.store');
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AuthController::class, 'login'])
+        ->middleware('throttle:auth-attempt')
+        ->name('login.store');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('/my-bookings', [AccountController::class, 'bookings'])->name('account.bookings');
+});
 
 Route::get('/privacy-policy', [PageController::class, 'privacy'])->name('privacy');
 Route::get('/terms-conditions', [PageController::class, 'terms'])->name('terms');
