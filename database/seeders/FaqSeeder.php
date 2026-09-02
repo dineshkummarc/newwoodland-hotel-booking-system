@@ -27,7 +27,7 @@ class FaqSeeder extends Seeder
             ],
             [
                 'question' => 'Is airport transportation available from Bhadrapur Airport?',
-                'answer' => 'Yes. Airport shuttle service is available upon request for guests arriving at or departing from Bhadrapur Airport.',
+                'answer' => 'The hotel does not operate its own airport shuttle, but Bhadrapur Airport is just a short distance away and taxis and local transport are readily available for a smooth ride to the hotel.',
                 'sort_order' => 4,
             ],
         ];

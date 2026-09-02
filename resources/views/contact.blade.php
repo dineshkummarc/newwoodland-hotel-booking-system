@@ -19,7 +19,7 @@
             <span class="section-subtitle text-warning">Get In Touch</span>
             <h1 class="font-heading">Contact New Woodland Hotel</h1>
             <p class="lead text-white-50 max-w-700 mx-auto mt-3">
-                We are ready to assist you with reservations, inquiries, airport transfers, and special requests.
+                We are ready to assist you with reservations, inquiries, travel directions, and special requests.
             </p>
         </div>
     </div>

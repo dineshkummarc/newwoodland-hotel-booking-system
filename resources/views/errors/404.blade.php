@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 </head>
 <body>
-    <section style="min-height:100vh; display:flex; align-items:center; background: linear-gradient(135deg, #0a4d32, #0f6b45); color:#fff;">
+    <section style="min-height:100vh; display:flex; align-items:center; background: linear-gradient(135deg, #4a1520, #6b1f2a); color:#fff;">
         <div class="container text-center py-5">
             <span class="section-subtitle text-warning">Error 404</span>
             <h1 class="font-heading" style="font-size: clamp(2.5rem, 6vw, 5rem);">Page Not Found</h1>

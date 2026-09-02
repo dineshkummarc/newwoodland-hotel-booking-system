@@ -1,15 +1,15 @@
 /* ==========================================================
    NEW WOODLAND HOTEL — ADMIN PANEL STYLESHEET
-   Shares the emerald/gold palette defined in style.css
+   Shares the burgundy/gold palette defined in style.css
 ========================================================== */
 
 :root {
-    --emerald: #0f6b45;
-    --emerald-dark: #0a4d32;
+    --emerald: #6b1f2a;
+    --emerald-dark: #4a1520;
     --gold: #d4af37;
-    --ink: #1c2a24;
-    --muted: #6b7a74;
-    --cream: #faf8f2;
+    --ink: #2a1215;
+    --muted: #7a6763;
+    --cream: #faf5ee;
 }
 
 body.admin-body {
@@ -168,7 +168,7 @@ body.admin-body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(15, 107, 69, .1);
+    background: rgba(107, 31, 42, .1);
     color: var(--emerald);
     font-size: 1.4rem;
     flex-shrink: 0;
@@ -244,7 +244,7 @@ body.admin-body {
 
 .upload-box:hover, .upload-box.dragover {
     border-color: var(--emerald);
-    background: rgba(15, 107, 69, .04);
+    background: rgba(107, 31, 42, .04);
 }
 
 .upload-box img.preview {

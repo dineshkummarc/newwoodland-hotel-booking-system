@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <style>
-        body { font-family: Arial, sans-serif; color: #1c2a24; background: #faf8f2; padding: 24px; }
+        body { font-family: Arial, sans-serif; color: #2a1215; background: #faf5ee; padding: 24px; }
         .card { max-width: 560px; margin: 0 auto; background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid #eee; }
-        .header { background: #0f6b45; color: #fff; padding: 24px; text-align: center; }
+        .header { background: #6b1f2a; color: #fff; padding: 24px; text-align: center; }
         .code { display: inline-block; background: #d4af37; color: #201a06; font-weight: bold; padding: 6px 16px; border-radius: 20px; margin-top: 8px; }
         .body { padding: 24px; }
         table { width: 100%; border-collapse: collapse; }
         td { padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
-        td.label { color: #6b7a74; width: 40%; }
+        td.label { color: #7a6763; width: 40%; }
         td.value { font-weight: 600; text-align: right; }
-        .total { font-size: 1.2em; color: #0f6b45; }
+        .total { font-size: 1.2em; color: #6b1f2a; }
     </style>
 </head>
 <body>

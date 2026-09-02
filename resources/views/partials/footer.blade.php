@@ -45,7 +45,7 @@
                     <li><a href="{{ route('booking') }}">Online Booking</a></li>
                     <li><a href="{{ route('facilities') }}">Restaurant & Bar</a></li>
                     <li><a href="{{ route('facilities') }}">Swimming Pool</a></li>
-                    <li><a href="{{ route('facilities') }}">Airport Shuttle</a></li>
+                    <li><a href="{{ route('facilities') }}">Airport Transportation</a></li>
                 </ul>
             </div>
 

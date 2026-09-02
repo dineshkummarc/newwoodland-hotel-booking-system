@@ -3,3 +3,4 @@ Disallow: /admin
 Disallow: /storage/private
 
 Sitemap: {{ route('sitemap') }}
+check

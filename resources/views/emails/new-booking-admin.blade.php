@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="UTF-8"></head>
-<body style="font-family: Arial, sans-serif; color: #1c2a24;">
+<body style="font-family: Arial, sans-serif; color: #2a1215;">
     <h2>New Booking Received</h2>
     <p><strong>Confirmation code:</strong> {{ $booking->confirmation_code }}</p>
     <table cellpadding="6">

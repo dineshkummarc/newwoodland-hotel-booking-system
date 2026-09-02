@@ -171,7 +171,6 @@
                     <div class="testimonial-rating">@for($i = 0; $i < $testimonial->rating; $i++)<i class="bi bi-star-fill"></i>@endfor</div>
                     <p class="mb-4">&ldquo;{{ $testimonial->content }}&rdquo;</p>
                     <div class="testimonial-user d-flex align-items-center gap-3">
-                        <img src="{{ $testimonial->avatar_path ?: 'https://ui-avatars.com/api/?name='.urlencode($testimonial->name).'&background=0f6b45&color=fff' }}" alt="{{ $testimonial->name }}">
                         <div>
                             <h5 class="mb-0">{{ $testimonial->name }}</h5>
                             <span class="text-muted small">{{ $testimonial->location }}</span>

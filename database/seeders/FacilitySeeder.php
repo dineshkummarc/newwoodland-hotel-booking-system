@@ -42,8 +42,8 @@ class FacilitySeeder extends Seeder
             ],
             [
                 'icon' => 'bi-airplane-fill',
-                'title' => 'Airport Transfer',
-                'description' => 'Convenient airport shuttle service available upon request to Bhadrapur Airport.',
+                'title' => 'Airport Transportation',
+                'description' => 'Bhadrapur Airport is just minutes away, with taxis and local transport readily available for a smooth ride to the hotel.',
                 'sort_order' => 6,
             ],
         ];

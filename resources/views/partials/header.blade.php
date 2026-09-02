@@ -1,27 +1,3 @@
-<!-- TOP HEADER -->
-<div class="top-header">
-    <div class="container">
-        <div class="top-contact">
-            <a href="tel:{{ $hotelPhoneRaw ?? '+9779801415107' }}">
-                <i class="bi bi-telephone-fill"></i> {{ $hotelPhone ?? '+977 9801415107' }}
-            </a>
-            <a href="mailto:{{ $hotelEmail ?? 'info@newwoodlandhotel.com' }}">
-                <i class="bi bi-envelope-fill"></i> {{ $hotelEmail ?? 'info@newwoodlandhotel.com' }}
-            </a>
-            <span>
-                <i class="bi bi-geo-alt-fill"></i> {{ $hotelAddress ?? 'Bhadrapur-8, Jhapa, Nepal' }}
-            </span>
-        </div>
-
-        <div class="top-social">
-            @if($facebookUrl ?? null)<a href="{{ $facebookUrl }}" target="_blank" rel="noopener" aria-label="Facebook"><i class="bi bi-facebook"></i></a>@endif
-            @if($instagramUrl ?? null)<a href="{{ $instagramUrl }}" target="_blank" rel="noopener" aria-label="Instagram"><i class="bi bi-instagram"></i></a>@endif
-            @if($youtubeUrl ?? null)<a href="{{ $youtubeUrl }}" target="_blank" rel="noopener" aria-label="Youtube"><i class="bi bi-youtube"></i></a>@endif
-            @if($tiktokUrl ?? null)<a href="{{ $tiktokUrl }}" target="_blank" rel="noopener" aria-label="TikTok"><i class="bi bi-tiktok"></i></a>@endif
-        </div>
-    </div>
-</div>
-
 <!-- NAVBAR -->
 <header class="header">
     <nav class="navbar navbar-expand-lg">
@@ -75,9 +51,33 @@
                     </li>
                 </ul>
 
-                <a href="{{ route('booking') }}" class="btn-book">
-                    <i class="bi bi-calendar-check me-1"></i> Book Now
-                </a>
+                <div class="d-flex align-items-center gap-3">
+                    @auth
+                        <div class="dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-circle me-1"></i> {{ Str::before(auth()->user()->name, ' ') }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{{ route('account.bookings') }}"><i class="bi bi-calendar3 me-2"></i>My Bookings</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form action="{{ route('logout') }}" method="POST" class="m-0">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item"><i class="bi bi-box-arrow-right me-2"></i>Logout</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    @else
+                        <a class="nav-link {{ request()->routeIs('login') ? 'active' : '' }}" href="{{ route('login') }}">
+                            <i class="bi bi-person me-1"></i> Sign In
+                        </a>
+                    @endauth
+
+                    <a href="{{ route('booking') }}" class="btn-book">
+                        <i class="bi bi-calendar-check me-1"></i> Book Now
+                    </a>
+                </div>
             </div>
         </div>
     </nav>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="UTF-8"></head>
-<body style="font-family: Arial, sans-serif; color: #1c2a24;">
+<body style="font-family: Arial, sans-serif; color: #2a1215;">
     <h2>New Contact Message</h2>
     <table cellpadding="6">
         <tr><td><strong>Name</strong></td><td>{{ $contactMessage->name }}</td></tr>
