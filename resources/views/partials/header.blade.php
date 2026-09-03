@@ -72,6 +72,9 @@
                         <a class="nav-link {{ request()->routeIs('login') ? 'active' : '' }}" href="{{ route('login') }}">
                             <i class="bi bi-person me-1"></i> Sign In
                         </a>
+                        <a class="nav-link {{ request()->routeIs('register') ? 'active' : '' }}" href="{{ route('register') }}">
+                            Register
+                        </a>
                     @endauth
 
                     <a href="{{ route('booking') }}" class="btn-book">

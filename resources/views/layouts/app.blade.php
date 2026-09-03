@@ -19,13 +19,13 @@
     <meta property="og:title" content="@yield('og_title', trim($__env->yieldContent('title', 'New Woodland Hotel | Hotel in Bhadrapur-8, Jhapa')))">
     <meta property="og:description" content="@yield('og_description', trim($__env->yieldContent('meta_description', 'New Woodland Hotel offers luxury accommodation, premium dining, modern facilities, and exceptional hospitality in Bhadrapur-8, Jhapa, Nepal.')))">
     <meta property="og:url" content="@yield('canonical', url()->current())">
-    <meta property="og:image" content="@yield('og_image', asset('assets/images/og-default.jpg'))">
+    <meta property="og:image" content="@yield('og_image', asset('storage/site/hero-1.jpg'))">
 
     <!-- TWITTER CARD -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="@yield('og_title', trim($__env->yieldContent('title', 'New Woodland Hotel | Hotel in Bhadrapur-8, Jhapa')))">
     <meta name="twitter:description" content="@yield('og_description', trim($__env->yieldContent('meta_description', 'New Woodland Hotel offers luxury accommodation, premium dining, modern facilities, and exceptional hospitality in Bhadrapur-8, Jhapa, Nepal.')))">
-    <meta name="twitter:image" content="@yield('og_image', asset('assets/images/og-default.jpg'))">
+    <meta name="twitter:image" content="@yield('og_image', asset('storage/site/hero-1.jpg'))">
 
     @stack('structured_data')
 

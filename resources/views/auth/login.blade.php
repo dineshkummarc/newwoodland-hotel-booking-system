@@ -43,9 +43,12 @@
                             <label class="booking-label">Password *</label>
                             <input type="password" name="password" class="form-control" required>
                         </div>
-                        <div class="form-check mb-4">
-                            <input type="checkbox" name="remember" class="form-check-input" id="remember">
-                            <label class="form-check-label text-muted small" for="remember">Remember me</label>
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div class="form-check">
+                                <input type="checkbox" name="remember" class="form-check-input" id="remember">
+                                <label class="form-check-label text-muted small" for="remember">Remember me</label>
+                            </div>
+                            <a href="{{ route('password.request') }}" class="text-emerald small fw-semibold">Forgot password?</a>
                         </div>
                         <button type="submit" class="btn-gold w-100 justify-content-center py-3">Sign In</button>
                     </form>
