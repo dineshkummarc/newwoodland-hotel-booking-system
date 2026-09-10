@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Book Your Stay | New Woodland Hotel')
-@section('meta_description', 'Reserve your room at New Woodland Hotel in Bhadrapur with a quick and easy booking request.')
+@section('title', 'Book Your Stay | Newwoodland Hotel and Lounge')
+@section('meta_description', 'Reserve your room at Newwoodland Hotel and Lounge in Bhadrapur with a quick and easy booking request.')
 @section('canonical', route('booking'))
 
 @section('content')
@@ -11,7 +11,7 @@
             <span class="section-subtitle text-warning">Instant Reservation</span>
             <h1 class="font-heading">Book Your Stay</h1>
             <p class="lead text-white-50 max-w-700 mx-auto mt-3">
-                Reserve your room at New Woodland Hotel in Bhadrapur with a quick and easy booking request.
+                Reserve your room at Newwoodland Hotel and Lounge in Bhadrapur with a quick and easy booking request.
             </p>
         </div>
     </div>
@@ -20,6 +20,14 @@
 <section id="booking-form-section" class="py-5 bg-light">
     <div class="container">
         <div class="booking-form-box p-4 p-md-5 bg-white rounded-4 shadow-sm border">
+            @if($errors->any())
+                <div class="alert alert-danger">
+                    @foreach($errors->all() as $error)
+                        <div>{{ $error }}</div>
+                    @endforeach
+                </div>
+            @endif
+
             @if($rooms->isEmpty())
                 <p class="text-center text-muted">No rooms are currently available for booking. Please check back soon.</p>
             @else
@@ -27,16 +35,16 @@
                 @csrf
                 <div class="row g-4">
                     <div class="col-md-6">
-                        <label class="booking-label">Check-in Date *</label>
-                        <input type="date" name="check_in" class="form-control" value="{{ old('check_in') }}" required>
+                        <label for="booking-check-in" class="booking-label">Check-in Date *</label>
+                        <input id="booking-check-in" type="date" name="check_in" class="form-control" value="{{ old('check_in') }}" required>
                     </div>
                     <div class="col-md-6">
-                        <label class="booking-label">Check-out Date *</label>
-                        <input type="date" name="check_out" class="form-control" value="{{ old('check_out') }}" required>
+                        <label for="booking-check-out" class="booking-label">Check-out Date *</label>
+                        <input id="booking-check-out" type="date" name="check_out" class="form-control" value="{{ old('check_out') }}" required>
                     </div>
                     <div class="col-md-6">
-                        <label class="booking-label">Room Type *</label>
-                        <select name="room_id" class="form-select" required>
+                        <label for="booking-room" class="booking-label">Room Type *</label>
+                        <select id="booking-room" name="room_id" class="form-select" required>
                             <option value="">Select Room</option>
                             @foreach($rooms as $room)
                             <option value="{{ $room->id }}" data-price="{{ $room->price_per_night }}" {{ (old('room_id', request('room')) == $room->id) ? 'selected' : '' }}>
@@ -46,8 +54,8 @@
                         </select>
                     </div>
                     <div class="col-md-6">
-                        <label class="booking-label">Guests *</label>
-                        <select name="guests_label" class="form-select" required>
+                        <label for="booking-guests" class="booking-label">Guests *</label>
+                        <select id="booking-guests" name="guests_label" class="form-select" required>
                             <option value="">Select</option>
                             <option value="1 Adult" {{ old('guests_label') === '1 Adult' ? 'selected' : '' }}>1 Adult</option>
                             <option value="2 Adults" {{ old('guests_label') === '2 Adults' ? 'selected' : '' }}>2 Adults</option>
@@ -57,24 +65,24 @@
                         </select>
                     </div>
                     <div class="col-md-6">
-                        <label class="booking-label">Full Name *</label>
-                        <input type="text" name="customer_name" class="form-control" value="{{ old('customer_name') }}" required>
+                        <label for="booking-name" class="booking-label">Full Name *</label>
+                        <input id="booking-name" type="text" name="customer_name" class="form-control" value="{{ old('customer_name') }}" required>
                     </div>
                     <div class="col-md-6">
-                        <label class="booking-label">Email Address *</label>
-                        <input type="email" name="email" class="form-control" value="{{ old('email') }}" required>
+                        <label for="booking-email" class="booking-label">Email Address *</label>
+                        <input id="booking-email" type="email" name="email" class="form-control" value="{{ old('email') }}" required>
                     </div>
                     <div class="col-md-6">
-                        <label class="booking-label">Phone Number *</label>
-                        <input type="tel" name="phone" class="form-control" value="{{ old('phone') }}" required>
+                        <label for="booking-phone" class="booking-label">Phone Number *</label>
+                        <input id="booking-phone" type="tel" name="phone" class="form-control" value="{{ old('phone') }}" required>
                     </div>
                     <div class="col-md-6">
-                        <label class="booking-label">Country</label>
-                        <input type="text" name="country" class="form-control" value="{{ old('country') }}">
+                        <label for="booking-country" class="booking-label">Country</label>
+                        <input id="booking-country" type="text" name="country" class="form-control" value="{{ old('country') }}">
                     </div>
                     <div class="col-12">
-                        <label class="booking-label">Special Requests</label>
-                        <textarea name="special_requests" class="form-control" rows="4">{{ old('special_requests') }}</textarea>
+                        <label for="booking-requests" class="booking-label">Special Requests</label>
+                        <textarea id="booking-requests" name="special_requests" class="form-control" rows="4">{{ old('special_requests') }}</textarea>
                     </div>
 
                     <div class="col-12">

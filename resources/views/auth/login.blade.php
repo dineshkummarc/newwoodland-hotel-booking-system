@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Sign In | New Woodland Hotel')
+@section('title', 'Sign In | Newwoodland Hotel and Lounge')
 @section('meta_robots', 'noindex, follow')
 
 @section('content')
@@ -36,12 +36,12 @@
                     <form action="{{ route('login.store') }}" method="POST">
                         @csrf
                         <div class="mb-3">
-                            <label class="booking-label">Email Address *</label>
-                            <input type="email" name="email" class="form-control" value="{{ old('email') }}" required autofocus>
+                            <label for="login-email" class="booking-label">Email Address *</label>
+                            <input id="login-email" type="email" name="email" class="form-control" value="{{ old('email') }}" required autofocus>
                         </div>
                         <div class="mb-3">
-                            <label class="booking-label">Password *</label>
-                            <input type="password" name="password" class="form-control" required>
+                            <label for="login-password" class="booking-label">Password *</label>
+                            <input id="login-password" type="password" name="password" class="form-control" required>
                         </div>
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <div class="form-check">

@@ -14,10 +14,10 @@
                         <path d="M 240,190 Q 250,150 240,125 Q 220,135 180,145 Q 210,165 240,190 Z" fill="#d4af37" />
                         <path d="M 260,190 Q 250,150 260,125 Q 280,135 320,145 Q 290,165 260,190 Z" fill="#d4af37" />
                     </svg>
-                    <span class="fs-4 font-heading fw-bold">Woodland <span class="text-gold">Hotel</span></span>
+                    <span class="fs-4 font-heading fw-bold">Newwoodland <span class="text-gold">Hotel and Lounge</span></span>
                 </a>
                 <p class="footer-text">
-                    Experience luxury, comfort, and authentic Nepalese hospitality at New Woodland Hotel in Bhadrapur-8, Jhapa, Nepal.
+                    Experience luxury, comfort, and authentic Nepalese hospitality at Newwoodland Hotel and Lounge in Bhadrapur-8, Jhapa, Nepal.
                 </p>
                 <div class="footer-social">
                     @if($facebookUrl ?? null)<a href="{{ $facebookUrl }}" target="_blank" rel="noopener" aria-label="Facebook"><i class="bi bi-facebook"></i></a>@endif
@@ -65,7 +65,7 @@
         <hr class="border-secondary mt-5">
 
         <div class="footer-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
-            <p>© {{ date('Y') }} <strong>New Woodland Hotel</strong>. All Rights Reserved.</p>
+            <p>© {{ date('Y') }} <strong>Newwoodland Hotel and Lounge</strong>. All Rights Reserved.</p>
             <div class="footer-bottom-links">
                 <a href="{{ route('privacy') }}" class="text-white-50">Privacy Policy</a>
                 <span class="mx-2 text-white-50">|</span>

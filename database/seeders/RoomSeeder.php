@@ -9,6 +9,22 @@ class RoomSeeder extends Seeder
 {
     public function run(): void
     {
+        // Standard in-room comforts present in every room type.
+        $standardAmenities = [
+            ['label' => 'Air Conditioning', 'icon' => 'bi-snow'],
+            ['label' => 'Fan', 'icon' => 'bi-fan'],
+            ['label' => 'Free Bottled Water', 'icon' => 'bi-droplet-fill'],
+            ['label' => 'Linens', 'icon' => 'bi-layers-fill'],
+            ['label' => 'Private Bathroom', 'icon' => 'bi-door-closed-fill'],
+            ['label' => 'Shower', 'icon' => 'bi-droplet'],
+            ['label' => 'Sleep Comfort Items', 'icon' => 'bi-moon-stars-fill'],
+            ['label' => 'Slippers', 'icon' => 'bi-bag-fill'],
+            ['label' => 'Toiletries', 'icon' => 'bi-basket-fill'],
+            ['label' => 'Towels', 'icon' => 'bi-square-fill'],
+            ['label' => 'Trash Cans', 'icon' => 'bi-trash'],
+            ['label' => 'Flat-Screen TV', 'icon' => 'bi-tv'],
+        ];
+
         $rooms = [
             [
                 'name' => 'Deluxe Room',
@@ -23,7 +39,11 @@ class RoomSeeder extends Seeder
                 'is_featured' => true,
                 'is_active' => true,
                 'image' => 'rooms/deluxe-room.jpg',
-                'amenities' => ['Free Wi-Fi', 'Breakfast Included'],
+                'amenities' => [
+                    ['label' => 'Free Wi-Fi', 'icon' => null],
+                    ['label' => 'Breakfast Included', 'icon' => null],
+                    ...$standardAmenities,
+                ],
             ],
             [
                 'name' => 'Executive Room',
@@ -38,7 +58,11 @@ class RoomSeeder extends Seeder
                 'is_featured' => true,
                 'is_active' => true,
                 'image' => 'rooms/executive-room.jpg',
-                'amenities' => ['Wi-Fi', 'Coffee Maker'],
+                'amenities' => [
+                    ['label' => 'Wi-Fi', 'icon' => null],
+                    ['label' => 'Coffee Maker', 'icon' => null],
+                    ...$standardAmenities,
+                ],
             ],
             [
                 'name' => 'Family Suite',
@@ -53,7 +77,14 @@ class RoomSeeder extends Seeder
                 'is_featured' => true,
                 'is_active' => true,
                 'image' => 'rooms/family-suite.jpg',
-                'amenities' => ['Bathtub', 'Breakfast Included'],
+                'amenities' => [
+                    ['label' => 'Bathtub', 'icon' => null],
+                    ['label' => 'Breakfast Included', 'icon' => null],
+                    // Living-area features specific to the suite's two-bedroom layout.
+                    ['label' => 'Separate Dining Area', 'icon' => 'bi-cup-straw'],
+                    ['label' => 'Sofa', 'icon' => 'bi-house-heart-fill'],
+                    ...$standardAmenities,
+                ],
             ],
         ];
 
@@ -69,8 +100,11 @@ class RoomSeeder extends Seeder
                 ['is_primary' => true, 'sort_order' => 0]
             );
 
-            foreach ($amenities as $label) {
-                $room->amenities()->firstOrCreate(['label' => $label], ['icon' => null]);
+            foreach ($amenities as $amenity) {
+                $room->amenities()->firstOrCreate(
+                    ['label' => $amenity['label']],
+                    ['icon' => $amenity['icon']]
+                );
             }
         }
     }

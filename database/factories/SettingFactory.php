@@ -18,6 +18,7 @@ class SettingFactory extends Factory
             'tiktok_url' => null,
             'checkin_time' => '12:00',
             'checkout_time' => '10:00',
+            'cancellation_window_hours' => 24,
         ];
     }
 }

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Forgot Password | New Woodland Hotel')
+@section('title', 'Forgot Password | Newwoodland Hotel and Lounge')
 @section('meta_robots', 'noindex, follow')
 
 @section('content')
@@ -36,8 +36,8 @@
                     <form action="{{ route('password.email') }}" method="POST">
                         @csrf
                         <div class="mb-4">
-                            <label class="booking-label">Email Address *</label>
-                            <input type="email" name="email" class="form-control" value="{{ old('email') }}" required autofocus>
+                            <label for="forgot-email" class="booking-label">Email Address *</label>
+                            <input id="forgot-email" type="email" name="email" class="form-control" value="{{ old('email') }}" required autofocus>
                         </div>
                         <button type="submit" class="btn-gold w-100 justify-content-center py-3">Send Reset Link</button>
                     </form>

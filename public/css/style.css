@@ -1,5 +1,5 @@
 /* ==========================================================
-   NEW WOODLAND HOTEL — CUSTOM STYLESHEET
+   Newwoodland Hotel and Lounge — CUSTOM STYLESHEET
    Palette: Burgundy (#6b1f2a / #4a1520 / #8f2e3c) + Gold (#d4af37) + Cream
    Fonts: Poppins (body), Playfair Display (headings)
 ========================================================== */
@@ -84,6 +84,8 @@ a {
     border-radius: 50px;
     display: inline-flex;
     align-items: center;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .btn-book:hover { color: #201a06; background: var(--gold-dark); }
@@ -143,8 +145,13 @@ a {
 
 .header .brand-text {
     color: #fff;
-    font-size: 1.5rem;
+    font-size: clamp(1.05rem, .55rem + 1.4vw, 1.5rem);
     font-weight: 700;
+    white-space: normal; /* Bootstrap's .navbar-brand default is nowrap — too wide on very small phones */
+}
+
+@media (min-width: 360px) {
+    .header .brand-text { white-space: nowrap; }
 }
 
 .header .brand-text span { color: var(--gold); }
@@ -154,6 +161,20 @@ a {
     font-weight: 500;
     margin: 0 .6rem;
     position: relative;
+    white-space: nowrap;
+}
+
+.header .navbar-collapse {
+    flex-wrap: wrap;
+    row-gap: .5rem;
+}
+
+@media (min-width: 1200px) {
+    .header .navbar-collapse {
+        flex-grow: 1;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+    }
 }
 
 .header .nav-link.active,
@@ -348,6 +369,50 @@ a {
 
 .room-image, .room-gallery { position: relative; }
 
+.room-quick-facts { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 2.5rem; }
+.room-fact-chip {
+    flex: 1 1 150px;
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: .9rem;
+    padding: 1rem 1.25rem;
+}
+.room-fact-chip i { font-size: 1.4rem; color: var(--emerald); }
+.room-fact-chip .room-fact-label { display: block; font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+.room-fact-chip .room-fact-value { font-weight: 600; }
+
+.room-gallery-thumbs .gallery-card img { cursor: pointer; transition: transform .3s ease; }
+.room-gallery-thumbs .gallery-card:hover img { transform: scale(1.06); }
+.room-gallery-thumbs .gallery-card.active-thumb { outline: 3px solid var(--gold); outline-offset: 2px; border-radius: .75rem; }
+
+.availability-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    background: #d4edda;
+    color: #14532d;
+    padding: .4rem 1rem;
+    border-radius: 50px;
+    font-size: .82rem;
+    font-weight: 600;
+}
+
+.facility-category-tag {
+    display: inline-block;
+    background: rgba(212, 175, 55, .15);
+    color: var(--gold-dark);
+    padding: .3rem .8rem;
+    border-radius: 50px;
+    font-size: .72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    white-space: nowrap;
+}
+
 .facility-icon {
     width: 64px;
     height: 64px;
@@ -491,6 +556,60 @@ a {
     padding: 1.25rem;
 }
 
+/* ===================== PAYMENT METHOD SELECTOR ===================== */
+.payment-method-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: .35rem;
+    min-height: 130px;
+    padding: 1.25rem .5rem;
+    border-radius: var(--radius-lg);
+    border: 2px solid #eee;
+    background: #fff;
+    color: var(--ink);
+    transition: all .2s ease;
+}
+
+.payment-method-card__label {
+    display: block;
+    font-weight: 600;
+    font-size: .95rem;
+}
+
+.payment-method-card__status {
+    display: block;
+    font-size: .78rem;
+}
+
+.payment-method-card--active {
+    border-color: var(--gold);
+}
+
+.payment-method-card--active:hover,
+.payment-method-card--active:focus-visible {
+    border-color: var(--gold-dark);
+    box-shadow: 0 8px 20px rgba(212, 175, 55, .25);
+    transform: translateY(-2px);
+}
+
+.payment-method-card--disabled {
+    background: var(--cream);
+    color: var(--muted);
+}
+
+.payment-method-card--disabled:hover,
+.payment-method-card--disabled:focus-visible {
+    border-color: #ddd;
+}
+
+.payment-method-card:focus-visible {
+    outline: 3px solid var(--gold);
+    outline-offset: 2px;
+}
+
 /* ===================== FOOTER ===================== */
 #footer {
     background: var(--emerald-dark);
@@ -565,12 +684,30 @@ a {
 .status.pending { background: #fff3cd; color: #8a6400; }
 .status.confirmed { background: #d4edda; color: #14532d; }
 .status.cancelled { background: #f8d7da; color: #7a1e2b; }
+.status.failed { background: #f8d7da; color: #7a1e2b; }
 
 /* ===================== MISC ===================== */
 .breadcrumb-item a { color: var(--emerald); }
 .breadcrumb-item.active { color: var(--muted); }
 
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    .header .nav-link { margin: 0 .35rem; font-size: .92rem; }
+    .btn-book { padding: .5rem 1.1rem; font-size: .92rem; }
+}
+
 @media (max-width: 991.98px) {
     .top-header .top-contact a:nth-child(3) { display: none; }
     #booking-search { margin-top: 1.5rem; }
+}
+
+@media (max-width: 575.98px) {
+    .room-card .border-top.pt-3 { flex-direction: column; align-items: stretch !important; gap: .75rem; }
+    .room-card .border-top.pt-3 .d-flex.gap-2 { width: 100%; }
+    .room-card .border-top.pt-3 .d-flex.gap-2 a { flex: 1; text-align: center; }
+}
+
+@media print {
+    .header, footer, .scroll-top, .page-banner::after { display: none !important; }
+    body { background: #fff; }
+    .shadow-sm, .shadow { box-shadow: none !important; }
 }

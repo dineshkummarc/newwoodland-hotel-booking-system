@@ -21,7 +21,15 @@ class RoomController extends Controller
 
         $room->load(['images', 'amenities']);
 
-        return view('rooms-details', compact('room'));
+        $relatedRooms = Room::active()
+            ->where('id', '!=', $room->id)
+            ->with('images')
+            ->orderBy('is_featured', 'desc')
+            ->orderBy('name')
+            ->take(3)
+            ->get();
+
+        return view('rooms-details', compact('room', 'relatedRooms'));
     }
 
     public function availability(Request $request, Room $room, BookingService $bookingService)

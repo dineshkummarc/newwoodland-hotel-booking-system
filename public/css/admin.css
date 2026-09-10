@@ -1,5 +1,5 @@
 /* ==========================================================
-   NEW WOODLAND HOTEL — ADMIN PANEL STYLESHEET
+   Newwoodland Hotel and Lounge — ADMIN PANEL STYLESHEET
    Shares the burgundy/gold palette defined in style.css
 ========================================================== */
 
@@ -215,6 +215,7 @@ body.admin-body {
 .status.pending { background: #fff3cd; color: #8a6400; }
 .status.confirmed { background: #d4edda; color: #14532d; }
 .status.cancelled { background: #f8d7da; color: #7a1e2b; }
+.status.failed { background: #f8d7da; color: #7a1e2b; }
 
 /* ===================== FORMS ===================== */
 .form-grid {

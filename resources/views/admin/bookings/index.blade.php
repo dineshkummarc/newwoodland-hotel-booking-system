@@ -35,9 +35,10 @@
 
 <div class="table-section">
     <table class="table align-middle">
-        <thead><tr><th>Code</th><th>Room</th><th>Guest</th><th>Dates</th><th>Total</th><th>Status</th><th></th></tr></thead>
+        <thead><tr><th>Code</th><th>Room</th><th>Guest</th><th>Dates</th><th>Total</th><th>Status</th><th>Payment</th><th></th></tr></thead>
         <tbody>
             @forelse($bookings as $booking)
+            @php $payment = $booking->payments->sortByDesc('created_at')->first(); @endphp
             <tr>
                 <td>{{ $booking->confirmation_code }}</td>
                 <td>{{ $booking->room->name ?? '—' }}</td>
@@ -45,10 +46,17 @@
                 <td>{{ $booking->check_in->format('d M') }} — {{ $booking->check_out->format('d M Y') }}</td>
                 <td>{{ npr($booking->total_price) }}</td>
                 <td><span class="status {{ $booking->status }}">{{ $booking->status }}</span></td>
+                <td>
+                    @if($payment)
+                        <span class="status {{ $payment->status === 'completed' ? 'confirmed' : $payment->status }}">{{ ucfirst($payment->status) }}</span>
+                    @else
+                        <span class="text-muted small">—</span>
+                    @endif
+                </td>
                 <td class="text-end"><a href="{{ route('admin.bookings.show', $booking) }}" class="btn btn-sm btn-outline-dark">View</a></td>
             </tr>
             @empty
-            <tr><td colspan="7" class="text-muted">No bookings found.</td></tr>
+            <tr><td colspan="8" class="text-muted">No bookings found.</td></tr>
             @endforelse
         </tbody>
     </table>

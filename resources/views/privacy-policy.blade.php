@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Privacy Policy | New Woodland Hotel')
-@section('meta_description', 'Learn how New Woodland Hotel collects, uses, shares, and protects your personal information.')
+@section('title', 'Privacy Policy | Newwoodland Hotel and Lounge')
+@section('meta_description', 'Learn how Newwoodland Hotel and Lounge collects, uses, shares, and protects your personal information.')
 @section('canonical', route('privacy'))
 @section('meta_robots', 'noindex, follow')
 
@@ -12,7 +12,7 @@
             <span class="section-subtitle text-warning">Privacy Policy</span>
             <h1 class="font-heading">Your Privacy Matters</h1>
             <p class="lead text-white-50 max-w-700 mx-auto mt-3">
-                Learn how New Woodland Hotel collects, uses, and protects your personal information.
+                Learn how Newwoodland Hotel and Lounge collects, uses, and protects your personal information.
             </p>
             <p class="text-white-50 small mb-0">Last updated: {{ now()->format('F j, Y') }}</p>
         </div>
@@ -23,7 +23,7 @@
     <div class="container">
         <div class="privacy-card p-4 bg-light rounded-4 shadow-sm border mb-4">
             <p class="text-muted mb-0">
-                At <strong>New Woodland Hotel</strong>, we respect your privacy and are committed to protecting the
+                At <strong>Newwoodland Hotel and Lounge</strong>, we respect your privacy and are committed to protecting the
                 personal information you provide through our website.
             </p>
         </div>
@@ -82,7 +82,7 @@
             <h2 class="font-heading text-emerald h4 mb-3">6. Contact Us</h2>
             <p class="text-muted mb-1">For questions or privacy-related requests, please contact:</p>
             <p class="text-muted mb-0">
-                <strong class="d-block text-emerald">New Woodland Hotel</strong>
+                <strong class="d-block text-emerald">Newwoodland Hotel and Lounge</strong>
                 Email: <a href="mailto:{{ $hotelEmail ?? 'info@newwoodlandhotel.com' }}" class="text-emerald">{{ $hotelEmail ?? 'info@newwoodlandhotel.com' }}</a><br>
                 @if($hotelPhone ?? null)
                 Phone: <a href="tel:{{ $hotelPhoneRaw ?? '' }}" class="text-emerald">{{ $hotelPhone }}</a>

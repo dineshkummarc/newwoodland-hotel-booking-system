@@ -23,6 +23,7 @@ class UpdateSettingsRequest extends FormRequest
             'tiktok_url' => ['nullable', 'url', 'max:255'],
             'checkin_time' => ['required', 'date_format:H:i'],
             'checkout_time' => ['required', 'date_format:H:i'],
+            'cancellation_window_hours' => ['required', 'integer', 'min:0', 'max:720'],
         ];
     }
 }

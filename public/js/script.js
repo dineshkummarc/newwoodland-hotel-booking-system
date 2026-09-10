@@ -186,6 +186,18 @@ document.addEventListener('DOMContentLoaded', function () {
     var availabilityBox = document.getElementById('availabilityResult');
     var submitBtn = document.getElementById('bookingSubmitBtn');
 
+    /* Prevent accidental double-submission on double-click/slow connections.
+       The server remains authoritative regardless — this is UX only. */
+    if (submitBtn) {
+        var bookingForm = submitBtn.closest('form');
+        if (bookingForm) {
+            bookingForm.addEventListener('submit', function () {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = 'Submitting&hellip;';
+            });
+        }
+    }
+
     function checkAvailability() {
         if (!roomSelect || !checkinInput || !checkoutInput || !availabilityBox) return;
 
@@ -195,6 +207,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (!roomId || !checkin || !checkout || checkout <= checkin) {
             availabilityBox.innerHTML = '';
+            if (submitBtn) submitBtn.disabled = false;
             return;
         }
 
@@ -214,7 +227,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             })
             .catch(function () {
+                // Network hiccups must never permanently block submission —
+                // the server re-validates availability authoritatively anyway.
                 availabilityBox.innerHTML = '';
+                if (submitBtn) submitBtn.disabled = false;
             });
     }
 

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Contact Us | New Woodland Hotel')
-@section('meta_description', 'Get in touch with New Woodland Hotel for reservations, inquiries, and special requests.')
+@section('title', 'Contact Us | Newwoodland Hotel and Lounge')
+@section('meta_description', 'Get in touch with Newwoodland Hotel and Lounge for reservations, inquiries, and special requests.')
 @section('canonical', route('contact'))
 
 @section('content')
@@ -13,11 +13,21 @@
     </div>
 </div>
 @endif
+@if($errors->any())
+<div class="container mt-4">
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @foreach($errors->all() as $error)
+            <div>{{ $error }}</div>
+        @endforeach
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</div>
+@endif
 <section id="page-hero" class="page-banner text-center">
     <div class="container">
         <div class="hero-content">
             <span class="section-subtitle text-warning">Get In Touch</span>
-            <h1 class="font-heading">Contact New Woodland Hotel</h1>
+            <h1 class="font-heading">Contact Newwoodland Hotel and Lounge</h1>
             <p class="lead text-white-50 max-w-700 mx-auto mt-3">
                 We are ready to assist you with reservations, inquiries, travel directions, and special requests.
             </p>
@@ -75,24 +85,24 @@
                         @csrf
                         <div class="row g-4">
                             <div class="col-md-6">
-                                <label class="form-label fw-medium">Full Name *</label>
-                                <input type="text" name="name" class="form-control" value="{{ old('name') }}" required>
+                                <label for="contact-name" class="form-label fw-medium">Full Name *</label>
+                                <input id="contact-name" type="text" name="name" class="form-control" value="{{ old('name') }}" required>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-medium">Email Address *</label>
-                                <input type="email" name="email" class="form-control" value="{{ old('email') }}" required>
+                                <label for="contact-email" class="form-label fw-medium">Email Address *</label>
+                                <input id="contact-email" type="email" name="email" class="form-control" value="{{ old('email') }}" required>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-medium">Phone Number *</label>
-                                <input type="tel" name="phone" class="form-control" value="{{ old('phone') }}" required>
+                                <label for="contact-phone" class="form-label fw-medium">Phone Number *</label>
+                                <input id="contact-phone" type="tel" name="phone" class="form-control" value="{{ old('phone') }}" required>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-medium">Subject</label>
-                                <input type="text" name="subject" class="form-control" value="{{ old('subject') }}">
+                                <label for="contact-subject" class="form-label fw-medium">Subject</label>
+                                <input id="contact-subject" type="text" name="subject" class="form-control" value="{{ old('subject') }}">
                             </div>
                             <div class="col-12">
-                                <label class="form-label fw-medium">Message *</label>
-                                <textarea name="message" class="form-control" rows="5" required>{{ old('message') }}</textarea>
+                                <label for="contact-message" class="form-label fw-medium">Message *</label>
+                                <textarea id="contact-message" name="message" class="form-control" rows="5" required>{{ old('message') }}</textarea>
                             </div>
                             <div class="col-12">
                                 <button type="submit" class="btn-gold py-3 px-5 fs-6">Send Message</button>

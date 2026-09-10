@@ -8,6 +8,16 @@
         <label class="form-label">Title *</label>
         <input type="text" name="title" class="form-control" value="{{ old('title', $facility->title) }}" required>
     </div>
+    <div>
+        <label class="form-label">Category</label>
+        <select name="category" class="form-select">
+            <option value="">— Uncategorized —</option>
+            @foreach(\App\Models\Facility::CATEGORIES as $value => $label)
+                <option value="{{ $value }}" {{ old('category', $facility->category) === $value ? 'selected' : '' }}>{{ $label }}</option>
+            @endforeach
+        </select>
+        <div class="form-text">Groups this facility on the public Facilities page.</div>
+    </div>
     <div class="full-width">
         <label class="form-label">Description</label>
         <textarea name="description" class="form-control" rows="3">{{ old('description', $facility->description) }}</textarea>

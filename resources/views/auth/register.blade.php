@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Create Account | New Woodland Hotel')
+@section('title', 'Create Account | Newwoodland Hotel and Lounge')
 @section('meta_robots', 'noindex, follow')
 
 @section('content')
@@ -32,24 +32,24 @@
                     <form action="{{ route('register.store') }}" method="POST">
                         @csrf
                         <div class="mb-3">
-                            <label class="booking-label">Full Name *</label>
-                            <input type="text" name="name" class="form-control" value="{{ old('name') }}" required autofocus>
+                            <label for="register-name" class="booking-label">Full Name *</label>
+                            <input id="register-name" type="text" name="name" class="form-control" value="{{ old('name') }}" required autofocus>
                         </div>
                         <div class="mb-3">
-                            <label class="booking-label">Email Address *</label>
-                            <input type="email" name="email" class="form-control" value="{{ old('email') }}" required>
+                            <label for="register-email" class="booking-label">Email Address *</label>
+                            <input id="register-email" type="email" name="email" class="form-control" value="{{ old('email') }}" required>
                         </div>
                         <div class="mb-3">
-                            <label class="booking-label">Phone Number</label>
-                            <input type="tel" name="phone" class="form-control" value="{{ old('phone') }}">
+                            <label for="register-phone" class="booking-label">Phone Number</label>
+                            <input id="register-phone" type="tel" name="phone" class="form-control" value="{{ old('phone') }}">
                         </div>
                         <div class="mb-3">
-                            <label class="booking-label">Password *</label>
-                            <input type="password" name="password" class="form-control" required>
+                            <label for="register-password" class="booking-label">Password *</label>
+                            <input id="register-password" type="password" name="password" class="form-control" required>
                         </div>
                         <div class="mb-4">
-                            <label class="booking-label">Confirm Password *</label>
-                            <input type="password" name="password_confirmation" class="form-control" required>
+                            <label for="register-password-confirm" class="booking-label">Confirm Password *</label>
+                            <input id="register-password-confirm" type="password" name="password_confirmation" class="form-control" required>
                         </div>
                         <button type="submit" class="btn-gold w-100 justify-content-center py-3">Create Account</button>
                     </form>

@@ -14,6 +14,9 @@
         <tr><td><strong>Total</strong></td><td>{{ npr($booking->total_price) }}</td></tr>
         <tr><td><strong>Special requests</strong></td><td>{{ $booking->special_requests ?: '—' }}</td></tr>
         <tr><td><strong>Status</strong></td><td>{{ ucfirst($booking->status) }}</td></tr>
+        @if($payment ?? null)
+        <tr><td><strong>Payment</strong></td><td>{{ payment_provider_label($payment->provider) }} — Ref {{ $payment->reference_id }} — {{ npr($payment->amount) }}</td></tr>
+        @endif
     </table>
 </body>
 </html>

@@ -5,26 +5,26 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="@yield('meta_description', 'New Woodland Hotel offers luxury accommodation, premium dining, modern facilities, and exceptional hospitality in Bhadrapur-8, Jhapa, Nepal.')">
-    <meta name="keywords" content="@yield('meta_keywords', 'New Woodland Hotel, Hotel in Bhadrapur, Woodland Hotel Nepal, Jhapa, Hotel Booking')">
-    <meta name="author" content="New Woodland Hotel">
+    <meta name="description" content="@yield('meta_description', 'Newwoodland Hotel and Lounge offers luxury accommodation, premium dining, modern facilities, and exceptional hospitality in Bhadrapur-8, Jhapa, Nepal.')">
+    <meta name="keywords" content="@yield('meta_keywords', 'Newwoodland Hotel and Lounge, Hotel in Bhadrapur, Hotel in Jhapa Nepal, Jhapa, Hotel Booking')">
+    <meta name="author" content="Newwoodland Hotel and Lounge">
     <meta name="robots" content="@yield('meta_robots', 'index, follow')">
     <link rel="canonical" href="@yield('canonical', url()->current())">
 
-    <title>@yield('title', 'New Woodland Hotel | Hotel in Bhadrapur-8, Jhapa')</title>
+    <title>@yield('title', 'Newwoodland Hotel and Lounge | Hotel in Bhadrapur-8, Jhapa')</title>
 
     <!-- OPEN GRAPH -->
     <meta property="og:type" content="website">
-    <meta property="og:site_name" content="New Woodland Hotel">
-    <meta property="og:title" content="@yield('og_title', trim($__env->yieldContent('title', 'New Woodland Hotel | Hotel in Bhadrapur-8, Jhapa')))">
-    <meta property="og:description" content="@yield('og_description', trim($__env->yieldContent('meta_description', 'New Woodland Hotel offers luxury accommodation, premium dining, modern facilities, and exceptional hospitality in Bhadrapur-8, Jhapa, Nepal.')))">
+    <meta property="og:site_name" content="Newwoodland Hotel and Lounge">
+    <meta property="og:title" content="@yield('og_title', trim($__env->yieldContent('title', 'Newwoodland Hotel and Lounge | Hotel in Bhadrapur-8, Jhapa')))">
+    <meta property="og:description" content="@yield('og_description', trim($__env->yieldContent('meta_description', 'Newwoodland Hotel and Lounge offers luxury accommodation, premium dining, modern facilities, and exceptional hospitality in Bhadrapur-8, Jhapa, Nepal.')))">
     <meta property="og:url" content="@yield('canonical', url()->current())">
     <meta property="og:image" content="@yield('og_image', asset('storage/site/hero-1.jpg'))">
 
     <!-- TWITTER CARD -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="@yield('og_title', trim($__env->yieldContent('title', 'New Woodland Hotel | Hotel in Bhadrapur-8, Jhapa')))">
-    <meta name="twitter:description" content="@yield('og_description', trim($__env->yieldContent('meta_description', 'New Woodland Hotel offers luxury accommodation, premium dining, modern facilities, and exceptional hospitality in Bhadrapur-8, Jhapa, Nepal.')))">
+    <meta name="twitter:title" content="@yield('og_title', trim($__env->yieldContent('title', 'Newwoodland Hotel and Lounge | Hotel in Bhadrapur-8, Jhapa')))">
+    <meta name="twitter:description" content="@yield('og_description', trim($__env->yieldContent('meta_description', 'Newwoodland Hotel and Lounge offers luxury accommodation, premium dining, modern facilities, and exceptional hospitality in Bhadrapur-8, Jhapa, Nepal.')))">
     <meta name="twitter:image" content="@yield('og_image', asset('storage/site/hero-1.jpg'))">
 
     @stack('structured_data')

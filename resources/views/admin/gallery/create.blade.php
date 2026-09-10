@@ -25,7 +25,7 @@
                     <i class="bi bi-cloud-arrow-up fs-1"></i>
                     <p class="mb-0">Click or drag an image here (JPG/PNG/WebP, max 4MB)</p>
                     <input type="file" name="image" accept="image/*" data-image-input="preview" class="form-control mt-3" required>
-                    <img id="preview" class="preview" style="display:none;">
+                    <img id="preview" alt="Selected image preview" class="preview" style="display:none;">
                 </div>
             </div>
         </div>

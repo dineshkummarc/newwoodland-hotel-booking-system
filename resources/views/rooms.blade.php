@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Rooms & Suites | New Woodland Hotel')
-@section('meta_description', 'Explore elegant rooms and premium suites at New Woodland Hotel in Bhadrapur, Jhapa, Nepal.')
+@section('title', 'Rooms & Suites | Newwoodland Hotel and Lounge')
+@section('meta_description', 'Explore elegant rooms and premium suites at Newwoodland Hotel and Lounge in Bhadrapur, Jhapa, Nepal.')
 @section('canonical', route('rooms.index'))
 
 @section('content')
@@ -38,17 +38,19 @@
                             <li><i class="bi bi-people-fill me-1"></i> {{ $room->max_guests }} Guests</li>
                             <li><i class="bi bi-lamp-fill me-1"></i> {{ $room->bed_type ?? 'King Bed' }}</li>
                             @if($room->size_sqm)<li><i class="bi bi-aspect-ratio me-1"></i> {{ $room->size_sqm }} m²</li>@endif
-                            <li><i class="bi bi-wifi me-1"></i> Free Wi-Fi</li>
+                            @foreach($room->amenities->take(2) as $amenity)
+                            <li><i class="bi {{ $amenity->icon ?: 'bi-check-circle' }} me-1"></i> {{ $amenity->label }}</li>
+                            @endforeach
                         </ul>
                     </div>
-                    <div class="border-top pt-3 d-flex justify-content-between align-items-center">
+                    <div class="border-top pt-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
                         <div>
                             <span class="fs-4 font-heading fw-bold text-emerald">{{ npr($room->price_per_night) }}</span>
                             <small class="text-muted">/ Night</small>
                         </div>
                         <div class="d-flex gap-2">
                             <a href="{{ route('rooms.show', $room->slug) }}" class="btn btn-outline-dark w-50 py-2 fs-6">View</a>
-                            <a href="{{ route('booking') }}" class="btn-gold w-50 py-2 fs-6">Book</a>
+                            <a href="{{ route('booking', ['room' => $room->id]) }}" class="btn-gold w-50 py-2 fs-6">Book</a>
                         </div>
                     </div>
                 </article>

@@ -22,7 +22,7 @@
                     <path d="M 260,190 Q 250,150 260,125 Q 280,135 320,145 Q 290,165 260,190 Z" fill="#800000" />
                     <path d="M 245,190 L 255,190 L 258,240 L 242,240 Z" fill="#4a1525" />
                 </svg>
-                <span class="brand-text">Woodland <span>Hotel</span></span>
+                <span class="brand-text">Newwoodland <span>Hotel and Lounge</span></span>
             </a>
 
             <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -30,7 +30,7 @@
             </button>
 
             <div class="collapse navbar-collapse" id="mainNavbar">
-                <ul class="navbar-nav mx-auto">
+                <ul class="navbar-nav">
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">Home</a>
                     </li>
@@ -51,7 +51,7 @@
                     </li>
                 </ul>
 
-                <div class="d-flex align-items-center gap-3">
+                <div class="d-flex align-items-center gap-3 flex-wrap flex-lg-nowrap justify-content-lg-end">
                     @auth
                         <div class="dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">

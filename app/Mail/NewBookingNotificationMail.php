@@ -17,6 +17,8 @@ class NewBookingNotificationMail extends Mailable
     {
         return $this
             ->subject('New Booking Received - '.$this->booking->confirmation_code)
-            ->view('emails.new-booking-admin');
+            ->view('emails.new-booking-admin', [
+                'payment' => $this->booking->latestPayment(),
+            ]);
     }
 }

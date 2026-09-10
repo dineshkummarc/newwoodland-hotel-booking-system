@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'My Bookings | New Woodland Hotel')
+@section('title', 'My Bookings | Newwoodland Hotel and Lounge')
 @section('meta_robots', 'noindex, nofollow')
 
 @section('content')
@@ -20,6 +20,9 @@
     <div class="container">
         @if(session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+        @if(session('error'))
+            <div class="alert alert-danger">{{ session('error') }}</div>
         @endif
 
         @if($bookings->isEmpty())
@@ -43,11 +46,46 @@
                             <tr><td class="text-muted">Check-in</td><td class="text-end fw-semibold">{{ $booking->check_in->format('D, d M Y') }}</td></tr>
                             <tr><td class="text-muted">Check-out</td><td class="text-end fw-semibold">{{ $booking->check_out->format('D, d M Y') }}</td></tr>
                             <tr><td class="text-muted">Nights</td><td class="text-end fw-semibold">{{ $booking->nights }}</td></tr>
+                            <tr><td class="text-muted">Payment</td><td class="text-end fw-semibold">{{ $booking->isPaid() ? 'Paid' : 'Not paid' }}</td></tr>
                             <tr><td class="text-muted fw-semibold">Total</td><td class="text-end fw-bold text-emerald">{{ npr($booking->total_price) }}</td></tr>
                         </table>
-                        <a href="{{ route('booking.confirmation', $booking->confirmation_code) }}" class="btn-outline py-2 px-4">View Details</a>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <a href="{{ route('booking.confirmation', $booking->confirmation_code) }}" class="btn-outline py-2 px-4">View Details</a>
+                            @if($booking->isCancellable($cancellationWindowHours))
+                                <button type="button" class="btn btn-outline-danger py-2 px-4" data-bs-toggle="modal" data-bs-target="#cancel-modal-{{ $booking->id }}">
+                                    Cancel Booking
+                                </button>
+                            @endif
+                        </div>
                     </div>
                 </div>
+
+                @if($booking->isCancellable($cancellationWindowHours))
+                <div class="modal fade" id="cancel-modal-{{ $booking->id }}" tabindex="-1" aria-labelledby="cancel-modal-label-{{ $booking->id }}" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="cancel-modal-label-{{ $booking->id }}">Cancel Booking {{ $booking->confirmation_code }}?</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure you want to cancel this booking? This cannot be undone.</p>
+                                <p class="text-muted small">Our policy requires cancellation at least {{ $cancellationWindowHours }} hours before check-in.</p>
+                                @if($booking->isPaid())
+                                    <p class="text-muted small mb-0">A payment has already been received for this booking. Refunds are not processed automatically — our team will contact you after cancellation to arrange one.</p>
+                                @endif
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Keep Booking</button>
+                                <form action="{{ route('account.bookings.cancel', $booking->confirmation_code) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="btn btn-danger">Yes, Cancel Booking</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endif
                 @endforeach
             </div>
 

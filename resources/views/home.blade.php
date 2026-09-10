@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'New Woodland Hotel | Hotel in Bhadrapur-8, Jhapa')
-@section('meta_description', 'New Woodland Hotel offers luxury accommodation, premium dining, modern facilities, and exceptional hospitality in Bhadrapur-8, Jhapa, Nepal.')
+@section('title', 'Newwoodland Hotel and Lounge | Hotel in Bhadrapur-8, Jhapa')
+@section('meta_description', 'Newwoodland Hotel and Lounge offers luxury accommodation, premium dining, modern facilities, and exceptional hospitality in Bhadrapur-8, Jhapa, Nepal.')
 @section('canonical', route('home'))
 
 @push('structured_data')
@@ -9,7 +9,7 @@
 {
     "@@context": "https://schema.org",
     "@@type": "Hotel",
-    "name": "New Woodland Hotel",
+    "name": "Newwoodland Hotel and Lounge",
     "image": "{{ asset('storage/site/hero-1.jpg') }}",
     "url": "{{ route('home') }}",
     "telephone": "{{ $hotelPhone ?? '+977 9801415107' }}",
@@ -34,10 +34,10 @@
 <section id="hero" class="page-banner text-center" style="background-image:url('{{ asset('storage/site/hero-1.jpg') }}'); background-size:cover; background-position:center;">
     <div class="container">
         <div class="hero-content">
-            <span class="section-subtitle text-warning">Welcome to Woodland Hotel</span>
+            <span class="section-subtitle text-warning">Welcome to Newwoodland Hotel and Lounge</span>
             <h1 class="font-heading">Experience Timeless Comfort</h1>
             <p class="lead text-white-50 max-w-700 mx-auto mt-3">
-                New Woodland Hotel offers luxury accommodation, premium dining, modern facilities, and exceptional hospitality in Bhadrapur-8, Jhapa, Nepal.
+                Newwoodland Hotel and Lounge offers luxury accommodation, premium dining, modern facilities, and exceptional hospitality in Bhadrapur-8, Jhapa, Nepal.
             </p>
             <div class="hero-buttons d-flex justify-content-center gap-3 mt-4">
                 <a href="{{ route('booking') }}" class="btn-gold py-3 px-5 fs-6">Book Your Stay</a>
@@ -51,13 +51,13 @@
     <div class="container">
         <div class="row align-items-center g-5">
             <div class="col-lg-6">
-                <img src="{{ asset('storage/site/about.jpg') }}" alt="New Woodland Hotel" class="img-fluid rounded-4 shadow-lg">
+                <img src="{{ asset('storage/site/about.jpg') }}" alt="Newwoodland Hotel and Lounge" class="img-fluid rounded-4 shadow-lg">
             </div>
             <div class="col-lg-6">
-                <span class="section-subtitle">About New Woodland Hotel</span>
+                <span class="section-subtitle">About Newwoodland Hotel and Lounge</span>
                 <h2 class="section-title">Comfort & Authentic Nepalese Hospitality</h2>
                 <p class="text-muted leading-relaxed">
-                    Located in Bhadrapur-8, Jhapa, Nepal, Woodland Hotel provides comfortable and luxurious accommodation for business travelers, families, and leisure guests alike.
+                    Located in Bhadrapur-8, Jhapa, Nepal, Newwoodland Hotel and Lounge provides comfortable and luxurious accommodation for business travelers, families, and leisure guests alike.
                 </p>
                 <a href="{{ route('about') }}" class="btn-gold">Learn More About Us</a>
             </div>
@@ -89,14 +89,14 @@
                             @if($room->size_sqm)<li><i class="bi bi-aspect-ratio me-1"></i> {{ $room->size_sqm }} m²</li>@endif
                         </ul>
                     </div>
-                    <div class="border-top pt-3 d-flex justify-content-between align-items-center">
+                    <div class="border-top pt-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
                         <div>
                             <span class="fs-4 font-heading fw-bold text-emerald">{{ npr($room->price_per_night) }}</span>
                             <small class="text-muted">/ Night</small>
                         </div>
                         <div class="d-flex gap-2">
                             <a href="{{ route('rooms.show', $room->slug) }}" class="btn btn-outline-dark py-2 fs-6">Details</a>
-                            <a href="{{ route('booking') }}" class="btn-gold py-2 fs-6">Book</a>
+                            <a href="{{ route('booking', ['room' => $room->id]) }}" class="btn-gold py-2 fs-6">Book</a>
                         </div>
                     </div>
                 </article>
@@ -139,7 +139,7 @@
     <div class="container">
         <div class="section-heading text-center mb-5">
             <span class="section-subtitle">Photo Gallery</span>
-            <h2 class="section-title">A Glimpse of New Woodland Hotel</h2>
+            <h2 class="section-title">A Glimpse of Newwoodland Hotel and Lounge</h2>
         </div>
         <div class="row g-4">
             @foreach($galleryPreview as $image)
@@ -162,7 +162,7 @@
         <div class="section-heading text-center mb-5">
             <span class="section-subtitle">Guest Reviews</span>
             <h2 class="section-title">What Guests Are Saying</h2>
-            <p class="text-muted">Real guest feedback from beautiful stays at New Woodland Hotel.</p>
+            <p class="text-muted">Real guest feedback from beautiful stays at Newwoodland Hotel and Lounge.</p>
         </div>
         <div class="row g-4">
             @forelse($testimonials as $testimonial)

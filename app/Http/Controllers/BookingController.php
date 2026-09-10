@@ -6,7 +6,6 @@ use App\Http\Requests\StoreBookingRequest;
 use App\Models\Booking;
 use App\Models\Room;
 use App\Services\BookingService;
-use App\Services\SettingsService;
 use Illuminate\Support\Facades\Auth;
 
 class BookingController extends Controller
@@ -18,7 +17,7 @@ class BookingController extends Controller
         return view('booking', compact('rooms'));
     }
 
-    public function store(StoreBookingRequest $request, BookingService $bookingService, SettingsService $settingsService)
+    public function store(StoreBookingRequest $request, BookingService $bookingService)
     {
         $room = $request->room();
 
@@ -34,16 +33,16 @@ class BookingController extends Controller
             'special_requests' => $request->validated('special_requests'),
         ]);
 
-        $bookingService->sendNotifications($booking, $settingsService->current()->site_email);
-
+        // The booking is held (pending) but not confirmed until payment is
+        // completed and verified server-side — see PaymentController.
         return redirect()
-            ->route('booking.confirmation', $booking->confirmation_code)
-            ->with('success', 'Your booking has been submitted successfully.');
+            ->route('booking.pay', $booking->confirmation_code)
+            ->with('success', 'Your room is held — please complete payment to confirm your booking.');
     }
 
     public function confirmation(Booking $booking)
     {
-        $booking->load('room');
+        $booking->load(['room', 'payments' => fn ($q) => $q->latest()]);
 
         return view('booking-confirmation', compact('booking'));
     }

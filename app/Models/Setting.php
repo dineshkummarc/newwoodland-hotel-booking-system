@@ -12,6 +12,7 @@ class Setting extends Model
     protected $fillable = [
         'site_phone', 'site_email', 'site_address', 'facebook_url',
         'instagram_url', 'youtube_url', 'tiktok_url', 'checkin_time', 'checkout_time',
+        'cancellation_window_hours',
     ];
 
     /**

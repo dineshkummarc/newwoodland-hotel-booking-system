@@ -47,7 +47,7 @@
             <i class="bi bi-cloud-arrow-up fs-1"></i>
             <p class="mb-0">Click or drag an image here to upload (JPG/PNG/WebP, max 4MB)</p>
             <input type="file" name="image" accept="image/*" data-image-input="newImagePreview" class="form-control mt-3" required>
-            <img id="newImagePreview" class="preview" style="display:none;">
+            <img id="newImagePreview" alt="Selected image preview" class="preview" style="display:none;">
         </div>
         <div class="form-check mt-3">
             <input type="checkbox" name="is_primary" class="form-check-input" id="isPrimaryUpload" value="1">

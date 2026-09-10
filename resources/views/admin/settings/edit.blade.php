@@ -44,6 +44,11 @@
                 <label class="form-label">Check-out Time *</label>
                 <input type="time" name="checkout_time" class="form-control" value="{{ old('checkout_time', $setting->checkout_time ? \Illuminate\Support\Carbon::parse($setting->checkout_time)->format('H:i') : '') }}" required>
             </div>
+            <div>
+                <label class="form-label">Cancellation Notice Required (hours) *</label>
+                <input type="number" min="0" max="720" name="cancellation_window_hours" class="form-control" value="{{ old('cancellation_window_hours', $setting->cancellation_window_hours ?? 24) }}" required>
+                <small class="text-muted">Guests must cancel their own booking at least this many hours before check-in. Applies site-wide.</small>
+            </div>
         </div>
         <div class="mt-4">
             <button type="submit" class="btn-admin-primary">Save Settings</button>

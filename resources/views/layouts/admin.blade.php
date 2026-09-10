@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
-    <title>@yield('title', 'Admin') | New Woodland Hotel</title>
+    <title>@yield('title', 'Admin') | Newwoodland Hotel and Lounge</title>
 
     <link rel="icon" type="image/svg+xml" href="{{ asset('assets/images/logo/logo.svg') }}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
@@ -19,7 +19,7 @@
 <body class="admin-body">
     <div class="dashboard-container">
         <aside class="sidebar">
-            <a href="{{ route('admin.dashboard') }}" class="brand-text">Woodland <span>Admin</span></a>
+            <a href="{{ route('admin.dashboard') }}" class="brand-text">Newwoodland <span>Admin</span></a>
             <ul class="sidebar-nav">
                 <li><a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a></li>
                 <li><a href="{{ route('admin.rooms.index') }}" class="{{ request()->routeIs('admin.rooms.*') ? 'active' : '' }}"><i class="bi bi-door-open-fill"></i> Rooms</a></li>

@@ -8,6 +8,7 @@ use App\Http\Controllers\FacilityController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
@@ -34,6 +35,20 @@ Route::post('/booking', [BookingController::class, 'store'])
 Route::get('/booking/confirmation/{booking:confirmation_code}', [BookingController::class, 'confirmation'])
     ->name('booking.confirmation');
 
+Route::get('/booking/{booking:confirmation_code}/pay', [PaymentController::class, 'show'])
+    ->name('booking.pay');
+Route::post('/booking/{booking:confirmation_code}/pay', [PaymentController::class, 'initiate'])
+    ->middleware('throttle:payment-initiate')
+    ->name('booking.pay.initiate');
+
+Route::get('/payment/esewa/success', [PaymentController::class, 'success'])->name('payment.esewa.success');
+Route::get('/payment/esewa/failure', [PaymentController::class, 'failure'])->name('payment.esewa.failure');
+
+Route::post('/booking/{booking:confirmation_code}/pay/khalti', [PaymentController::class, 'khaltiInitiate'])
+    ->middleware('throttle:payment-initiate')
+    ->name('booking.pay.khalti.initiate');
+Route::get('/payment/khalti/return', [PaymentController::class, 'khaltiReturn'])->name('payment.khalti.return');
+
 Route::middleware('guest')->group(function () {
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register'])
@@ -57,6 +72,8 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/my-bookings', [AccountController::class, 'bookings'])->name('account.bookings');
+    Route::post('/my-bookings/{booking:confirmation_code}/cancel', [AccountController::class, 'cancelBooking'])
+        ->name('account.bookings.cancel');
 });
 
 Route::get('/privacy-policy', [PageController::class, 'privacy'])->name('privacy');

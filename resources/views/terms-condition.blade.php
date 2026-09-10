@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Terms & Conditions | New Woodland Hotel')
-@section('meta_description', 'Read the terms that govern reservations, guest stays, and hotel services at New Woodland Hotel.')
+@section('title', 'Terms & Conditions | Newwoodland Hotel and Lounge')
+@section('meta_description', 'Read the terms that govern reservations, guest stays, and hotel services at Newwoodland Hotel and Lounge.')
 @section('canonical', route('terms'))
 @section('meta_robots', 'noindex, follow')
 
@@ -12,7 +12,7 @@
             <span class="section-subtitle text-warning">Terms & Conditions</span>
             <h1 class="font-heading">Booking Terms & Conditions</h1>
             <p class="lead text-white-50 max-w-700 mx-auto mt-3">
-                Read the terms that govern reservations, guest stays, and hotel services at New Woodland Hotel.
+                Read the terms that govern reservations, guest stays, and hotel services at Newwoodland Hotel and Lounge.
             </p>
         </div>
     </div>
@@ -25,10 +25,11 @@
                 <div class="terms-card p-4 bg-light rounded-4 shadow-sm border mb-4">
                     <h2 class="font-heading text-emerald h4 mb-3">1. Booking & Payment</h2>
                     <p class="text-muted mb-0">
-                        Bookings made through this website are reservation requests and are confirmed by the hotel
-                        via email with a confirmation code. Rates are quoted per night in
-                        <strong>Nepalese Rupees (NPR)</strong>. Payment is generally made at check-in unless
-                        otherwise agreed.
+                        Bookings made through this website require full payment online via eSewa at the time of
+                        booking. A reservation is held temporarily once submitted, and is only confirmed — with a
+                        confirmation code sent by email — after payment is successfully verified. Rates are quoted
+                        per night in <strong>Nepalese Rupees (NPR)</strong>. If payment is not completed, the room
+                        is not guaranteed and may become available to other guests.
                     </p>
                 </div>
 

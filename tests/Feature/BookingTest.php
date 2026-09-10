@@ -36,10 +36,14 @@ class BookingTest extends TestCase
 
         $booking = Booking::first();
         $this->assertNotNull($booking);
-        $response->assertRedirect(route('booking.confirmation', $booking->confirmation_code));
+        // Booking is held (pending) and routed to payment — it is not
+        // confirmed, and no confirmation email is sent, until payment
+        // succeeds. See PaymentTest for the payment-completes-booking flow.
+        $response->assertRedirect(route('booking.pay', $booking->confirmation_code));
         $this->assertEquals(3, $booking->nights);
         $this->assertEquals(4500, (float) $booking->total_price);
         $this->assertEquals('pending', $booking->status);
+        Mail::assertNothingSent();
     }
 
     public function test_invalid_booking_fails_validation(): void

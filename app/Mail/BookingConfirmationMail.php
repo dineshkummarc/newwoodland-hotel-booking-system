@@ -17,6 +17,8 @@ class BookingConfirmationMail extends Mailable
     {
         return $this
             ->subject('Booking Confirmation - '.$this->booking->confirmation_code)
-            ->view('emails.booking-confirmation');
+            ->view('emails.booking-confirmation', [
+                'payment' => $this->booking->latestPayment(),
+            ]);
     }
 }

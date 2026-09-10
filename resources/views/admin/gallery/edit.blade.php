@@ -22,7 +22,7 @@
             </div>
             <div class="full-width">
                 <label class="form-label">Current Image</label><br>
-                <img src="{{ asset('storage/'.$image->path) }}" style="max-height:160px;" class="rounded mb-3">
+                <img src="{{ asset('storage/'.$image->path) }}" alt="{{ $image->title ?: 'Current gallery image' }}" style="max-height:160px;" class="rounded mb-3">
                 <label class="form-label">Replace Image (optional)</label>
                 <input type="file" name="image" accept="image/*" class="form-control">
             </div>

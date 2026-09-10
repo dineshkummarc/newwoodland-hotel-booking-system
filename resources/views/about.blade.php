@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'About New Woodland Hotel')
-@section('meta_description', 'Learn about New Woodland Hotel — luxury accommodation and authentic Nepalese hospitality in Bhadrapur-8, Jhapa, Nepal.')
+@section('title', 'About Newwoodland Hotel and Lounge')
+@section('meta_description', 'Learn about Newwoodland Hotel and Lounge — luxury accommodation and authentic Nepalese hospitality in Bhadrapur-8, Jhapa, Nepal.')
 @section('canonical', route('about'))
 
 @section('content')
@@ -11,7 +11,7 @@
             <span class="section-subtitle text-warning">About Us</span>
             <h1 class="font-heading">Our Story in Bhadrapur</h1>
             <p class="lead text-white-50 max-w-700 mx-auto mt-3">
-                New Woodland Hotel blends contemporary comfort with warm Nepalese hospitality in a peaceful Bhadrapur setting.
+                Newwoodland Hotel and Lounge blends contemporary comfort with warm Nepalese hospitality in a peaceful Bhadrapur setting.
             </p>
         </div>
     </div>

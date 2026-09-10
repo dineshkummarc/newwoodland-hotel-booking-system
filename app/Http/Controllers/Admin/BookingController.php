@@ -12,7 +12,7 @@ class BookingController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Booking::with('room')->latest();
+        $query = Booking::with(['room', 'payments'])->latest();
 
         $this->applyFilters($query, $request);
 
@@ -23,7 +23,7 @@ class BookingController extends Controller
 
     public function show(Booking $booking)
     {
-        $booking->load('room');
+        $booking->load(['room', 'payments']);
 
         return view('admin.bookings.show', compact('booking'));
     }
@@ -36,14 +36,23 @@ class BookingController extends Controller
             ])],
         ])->validate();
 
-        $booking->update(['status' => $validated['status']]);
+        // Keep cancelled_at consistent with status regardless of which side
+        // (guest self-service or admin override) changes it, so the two
+        // fields never drift apart (e.g. a re-confirmed booking still
+        // showing a stale cancellation timestamp).
+        $booking->update([
+            'status' => $validated['status'],
+            'cancelled_at' => $validated['status'] === Booking::STATUS_CANCELLED
+                ? ($booking->cancelled_at ?? now())
+                : null,
+        ]);
 
         return back()->with('success', 'Booking status updated to '.ucfirst($validated['status']).'.');
     }
 
     public function export(Request $request): StreamedResponse
     {
-        $query = Booking::with('room')->latest();
+        $query = Booking::with(['room', 'payments'])->latest();
         $this->applyFilters($query, $request);
         $bookings = $query->get();
 
@@ -51,9 +60,11 @@ class BookingController extends Controller
 
         return response()->streamDownload(function () use ($bookings) {
             $out = fopen('php://output', 'w');
-            fputcsv($out, ['Confirmation Code', 'Room', 'Guest', 'Email', 'Phone', 'Check-in', 'Check-out', 'Nights', 'Nightly Rate', 'Total', 'Status', 'Created At']);
+            fputcsv($out, ['Confirmation Code', 'Room', 'Guest', 'Email', 'Phone', 'Check-in', 'Check-out', 'Nights', 'Nightly Rate', 'Total', 'Status', 'Payment Status', 'Payment Ref', 'Created At']);
 
             foreach ($bookings as $booking) {
+                $payment = $booking->payments->sortByDesc('created_at')->first();
+
                 fputcsv($out, [
                     $booking->confirmation_code,
                     $booking->room->name ?? '—',
@@ -66,6 +77,8 @@ class BookingController extends Controller
                     $booking->nightly_rate,
                     $booking->total_price,
                     $booking->status,
+                    $payment->status ?? '—',
+                    $payment->reference_id ?? '—',
                     $booking->created_at->toDateTimeString(),
                 ]);
             }
