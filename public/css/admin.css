@@ -216,6 +216,12 @@ body.admin-body {
 .status.confirmed { background: #d4edda; color: #14532d; }
 .status.cancelled { background: #f8d7da; color: #7a1e2b; }
 .status.failed { background: #f8d7da; color: #7a1e2b; }
+.status.checked_in { background: #cfe2ff; color: #084298; }
+.status.checked_out { background: #e2e3e5; color: #41464b; }
+.status.completed { background: #d4edda; color: #14532d; }
+.status.no_show { background: #f8d7da; color: #7a1e2b; }
+.status.maintenance { background: #fff3cd; color: #8a6400; }
+.status.out_of_service { background: #f8d7da; color: #7a1e2b; }
 
 /* ===================== FORMS ===================== */
 .form-grid {
@@ -309,3 +315,6 @@ body.admin-body {
     .sidebar { width: 100%; height: auto; position: static; }
     .main-content { padding: 1.25rem; }
 }
+
+/* Staff-only VIP marker (guest directory, bookings, front desk). */
+.status.vip { background: #f5e6b8; color: #6b4e00; }

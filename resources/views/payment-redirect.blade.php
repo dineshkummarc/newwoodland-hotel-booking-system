@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Redirecting to eSewa | Newwoodland Hotel and Lounge')
+@section('title', 'Redirecting to eSewa | Newwoodland Hotel & Lounge')
 @section('meta_robots', 'noindex, nofollow')
 
 @section('content')

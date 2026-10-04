@@ -1,0 +1,202 @@
+/* =====================================================================
+   ABOUT PAGE — storytelling layout (resources/views/about.blade.php).
+   Burgundy (--emerald) + gold + ivory (--cream), tokens from style.css.
+   Mobile-first; each section uses a different composition so the page
+   doesn't read as a template. Photos come from config/about.php slots;
+   until the hotel's own photos exist, .about-photo--placeholder shows a
+   labelled "Client Photo Required" panel instead of a stock photo.
+   ===================================================================== */
+.about-section { padding: clamp(3.5rem, 2rem + 6vw, 7rem) 0; background: #fff; }
+.about-section--ivory { background: var(--cream); }
+/* Two ivory sections in a row (Our Approach → Our People): don't double the
+   padding into a gap — a short gold rule marks the change of section instead. */
+.about-section--ivory + .about-section--ivory { padding-top: 0; }
+.about-section--ivory + .about-section--ivory > .container::before {
+    content: "";
+    display: block;
+    width: 64px;
+    height: 2px;
+    margin: 0 auto clamp(3rem, 2rem + 3vw, 4.5rem);
+    background: var(--gold);
+}
+.about-narrow { max-width: 720px; }
+
+.about-eyebrow {
+    display: inline-block;
+    font-size: .8125rem;
+    font-weight: 600;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--gold-text);
+    margin-bottom: .75rem;
+}
+.about-eyebrow::before {
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    margin-right: .6rem;
+    vertical-align: middle;
+    background: currentColor;
+}
+.about-eyebrow--light { color: var(--gold); }
+.about-heading {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: clamp(1.7rem, 1.1rem + 2.4vw, 2.75rem);
+    line-height: 1.2;
+    color: var(--ink);
+    margin-bottom: 1.25rem;
+    overflow-wrap: break-word;
+}
+.about-heading--light { color: #fff; }
+.about-text { color: var(--muted); font-size: 1.0625rem; line-height: 1.75; }
+.about-text--lead { color: var(--ink); font-size: clamp(1.08rem, 1rem + .4vw, 1.25rem); line-height: 1.7; }
+/* Justified body copy from tablet up; on phones the narrow column opens
+   wide word gaps, so it stays left-aligned there. */
+.about-text { text-wrap: pretty; }
+@media (min-width: 576px) {
+    .about-text { text-align: justify; }
+    .text-center .about-text { text-align: center; }
+}
+
+.about-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .9rem 1.25rem; margin-top: 2rem; }
+.about-btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: .8rem 1.6rem;
+    border: 1px solid rgba(255, 255, 255, .7);
+    border-radius: 50px;
+    color: #fff;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background .2s, color .2s;
+}
+.about-btn-ghost:hover, .about-btn-ghost:focus-visible { background: #fff; color: var(--emerald); }
+.about-link-light { color: var(--gold); font-weight: 600; text-decoration: none; }
+.about-link-light:hover, .about-link-light:focus-visible { color: #fff; }
+
+/* Photo slots ---------------------------------------------------------- */
+.about-photo { position: relative; overflow: hidden; background: var(--emerald-dark); }
+.about-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.about-photo--landscape { aspect-ratio: 4 / 3; border-radius: var(--radius-lg); }
+.about-photo--framed { box-shadow: 18px 18px 0 rgba(212, 175, 55, .35); }
+.about-photo--panorama { aspect-ratio: 16 / 9; max-height: 560px; width: 100%; }
+.about-photo--card { aspect-ratio: 4 / 3; }
+/* Placeholder look comes from .photo-placeholder (style.css); here it fills the slot. */
+.about-photo .photo-placeholder { position: absolute; inset: 0; }
+
+/* 01 Hero -------------------------------------------------------------- */
+.about-hero {
+    position: relative;
+    min-height: clamp(460px, 78vh, 760px);
+    display: flex;
+    align-items: flex-end;
+    color: #fff;
+    overflow: hidden;
+}
+.about-hero__media { position: absolute; inset: 0; }
+/* The headline sits over the hero placeholder: keep its label near the top and quiet. */
+.about-hero__media .photo-placeholder { justify-content: flex-start; padding-top: 6.5rem; }
+.about-hero__media .photo-placeholder::before { display: none; }
+.about-hero__media .photo-placeholder > * { opacity: .55; }
+.about-hero__shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(42, 18, 21, .15) 0%, rgba(42, 18, 21, .82) 100%);
+}
+.about-hero__inner { position: relative; padding-top: 6rem; padding-bottom: clamp(3rem, 2rem + 5vw, 6rem); }
+.about-hero__title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 800;
+    font-size: clamp(2.1rem, 1.2rem + 4.5vw, 4.4rem);
+    line-height: 1.08;
+    max-width: 14ch;
+    margin-bottom: 1.25rem;
+}
+.about-hero__lead { max-width: 560px; color: rgba(255, 255, 255, .85); font-size: clamp(1rem, .95rem + .35vw, 1.15rem); line-height: 1.75; }
+
+/* 03 Story ------------------------------------------------------------- */
+.about-story__text { max-width: 760px; }
+
+/* 04 Approach — numbered editorial grid -------------------------------- */
+.about-principles {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    border-top: 1px solid rgba(107, 31, 42, .15);
+}
+.about-principles li { padding: 1.6rem 0; border-bottom: 1px solid rgba(107, 31, 42, .15); }
+.about-principles__num {
+    display: block;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--gold-text);
+    margin-bottom: .35rem;
+}
+.about-principles h3 { font-size: 1.3rem; color: var(--emerald); margin-bottom: .4rem; }
+.about-principles p { color: var(--muted); margin: 0; line-height: 1.7; }
+@media (min-width: 768px) {
+    .about-principles { grid-template-columns: 1fr 1fr; column-gap: 3rem; }
+}
+
+/* 05 Owners ------------------------------------------------------------ */
+.about-owner { margin: 0; text-align: center; }
+.about-owner__portrait {
+    width: min(220px, 70%);
+    aspect-ratio: 1;
+    margin: 0 auto 1.25rem;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #fff;
+    box-shadow: 0 0 0 1px rgba(212, 175, 55, .6), 0 18px 40px rgba(74, 21, 32, .18);
+    background: linear-gradient(135deg, var(--emerald), var(--emerald-light));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.about-owner__portrait img { width: 100%; height: 100%; object-fit: cover; }
+.about-owner__initials { font-family: 'Playfair Display', serif; font-size: 2.6rem; color: var(--gold); letter-spacing: .05em; }
+.about-owner__name { font-size: 1.3rem; color: var(--ink); margin-bottom: .2rem; }
+.about-owner__role { font-size: .8125rem; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--gold-text); }
+.about-owner__experience { display: block; margin-top: .35rem; font-size: .9375rem; color: var(--muted); }
+.about-owner__message { margin: .9rem auto 0; max-width: 300px; color: var(--muted); font-style: italic; }
+
+/* 06 Commitment -------------------------------------------------------- */
+.about-pledges {
+    display: grid;
+    grid-template-columns: 1fr;
+    margin-top: 3rem;
+    border-top: 2px solid var(--gold);
+}
+.about-pledge { padding: 1.75rem 0; border-bottom: 1px solid rgba(107, 31, 42, .12); }
+.about-pledge h3 { font-size: 1.15rem; color: var(--emerald); margin-bottom: .5rem; }
+.about-pledge h3 i { color: var(--gold-dark); margin-right: .4rem; }
+.about-pledge p { color: var(--muted); margin: 0; line-height: 1.7; }
+@media (min-width: 768px) {
+    .about-pledges { grid-template-columns: repeat(3, 1fr); }
+    .about-pledge { padding: 2rem 1.75rem 0 0; border-bottom: 0; }
+    .about-pledge + .about-pledge { padding-left: 1.75rem; border-left: 1px solid rgba(107, 31, 42, .12); }
+}
+
+/* 07 Final welcome ----------------------------------------------------- */
+.about-welcome { background: linear-gradient(135deg, var(--emerald-dark), var(--emerald)); color: #fff; }
+.about-welcome__text { color: rgba(255, 255, 255, .82); font-size: 1.05rem; line-height: 1.8; }
+.about-welcome__closing {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.4rem, 1rem + 1.6vw, 2.1rem);
+    color: var(--gold);
+    margin: 1.5rem 0 .5rem;
+}
+
+@media (max-width: 575.98px) {
+    /* No room for the hero placeholder's caption behind the headline on phones. */
+    .about-hero__media .photo-placeholder i,
+    .about-hero__media .photo-placeholder__label { display: none; }
+    .about-actions .btn-gold,
+    .about-actions .about-btn-ghost { width: 100%; justify-content: center; }
+    .about-photo--framed { box-shadow: 10px 10px 0 rgba(212, 175, 55, .35); margin-right: 10px; }
+}

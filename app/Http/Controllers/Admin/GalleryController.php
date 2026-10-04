@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreGalleryImageRequest;
 use App\Models\GalleryImage;
+use App\Services\AuditLogService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
@@ -22,15 +23,20 @@ class GalleryController extends Controller
         return view('admin.gallery.create');
     }
 
-    public function store(StoreGalleryImageRequest $request)
+    public function store(StoreGalleryImageRequest $request, AuditLogService $auditLog)
     {
         $path = $request->file('image')->store('gallery', 'public');
 
-        GalleryImage::create([
+        $image = GalleryImage::create([
             'title' => $request->validated('title'),
             'category' => $request->validated('category'),
             'path' => $path,
             'sort_order' => (GalleryImage::max('sort_order') ?? 0) + 1,
+        ]);
+
+        $auditLog->log('gallery.created', 'gallery_image', $image->id, "Added gallery image \"{$image->title}\".", [
+            'category' => $image->category,
+            'path' => $path,
         ]);
 
         Cache::forget('home.page.data');
@@ -43,8 +49,9 @@ class GalleryController extends Controller
         return view('admin.gallery.edit', ['image' => $gallery]);
     }
 
-    public function update(StoreGalleryImageRequest $request, GalleryImage $gallery)
+    public function update(StoreGalleryImageRequest $request, GalleryImage $gallery, AuditLogService $auditLog)
     {
+        $before = $gallery->getAttributes();
         $data = [
             'title' => $request->validated('title'),
             'category' => $request->validated('category'),
@@ -57,15 +64,21 @@ class GalleryController extends Controller
 
         $gallery->update($data);
 
+        $auditLog->logChanges('gallery.updated', 'gallery_image', $gallery, "Updated gallery image \"{$gallery->title}\".", $before);
+
         Cache::forget('home.page.data');
 
         return redirect()->route('admin.gallery.index')->with('success', 'Gallery image updated.');
     }
 
-    public function destroy(GalleryImage $gallery)
+    public function destroy(GalleryImage $gallery, AuditLogService $auditLog)
     {
         Storage::disk('public')->delete($gallery->path);
         $gallery->delete();
+
+        $auditLog->log('gallery.deleted', 'gallery_image', $gallery->id, "Deleted gallery image \"{$gallery->title}\".", [
+            'path' => $gallery->path,
+        ]);
 
         Cache::forget('home.page.data');
 

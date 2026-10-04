@@ -5,27 +5,33 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="@yield('meta_description', 'Newwoodland Hotel and Lounge offers luxury accommodation, premium dining, modern facilities, and exceptional hospitality in Bhadrapur-8, Jhapa, Nepal.')">
-    <meta name="keywords" content="@yield('meta_keywords', 'Newwoodland Hotel and Lounge, Hotel in Bhadrapur, Hotel in Jhapa Nepal, Jhapa, Hotel Booking')">
-    <meta name="author" content="Newwoodland Hotel and Lounge">
+    <meta name="description" content="@yield('meta_description', 'Newwoodland Hotel & Lounge offers luxury accommodation, premium dining, modern facilities, and exceptional hospitality in Bhadrapur-8, Jhapa, Nepal.')">
+    <meta name="keywords" content="@yield('meta_keywords', 'Newwoodland Hotel & Lounge, Hotel in Bhadrapur, Hotel in Jhapa Nepal, Jhapa, Hotel Booking')">
+    <meta name="author" content="Newwoodland Hotel & Lounge">
     <meta name="robots" content="@yield('meta_robots', 'index, follow')">
     <link rel="canonical" href="@yield('canonical', url()->current())">
 
-    <title>@yield('title', 'Newwoodland Hotel and Lounge | Hotel in Bhadrapur-8, Jhapa')</title>
+    <title>@yield('title', 'Newwoodland Hotel & Lounge | Hotel in Bhadrapur-8, Jhapa')</title>
 
     <!-- OPEN GRAPH -->
     <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Newwoodland Hotel and Lounge">
-    <meta property="og:title" content="@yield('og_title', trim($__env->yieldContent('title', 'Newwoodland Hotel and Lounge | Hotel in Bhadrapur-8, Jhapa')))">
-    <meta property="og:description" content="@yield('og_description', trim($__env->yieldContent('meta_description', 'Newwoodland Hotel and Lounge offers luxury accommodation, premium dining, modern facilities, and exceptional hospitality in Bhadrapur-8, Jhapa, Nepal.')))">
+    <meta property="og:site_name" content="Newwoodland Hotel & Lounge">
+    <meta property="og:title" content="@yield('og_title', trim($__env->yieldContent('title', 'Newwoodland Hotel & Lounge | Hotel in Bhadrapur-8, Jhapa')))">
+    <meta property="og:description" content="@yield('og_description', trim($__env->yieldContent('meta_description', 'Newwoodland Hotel & Lounge offers luxury accommodation, premium dining, modern facilities, and exceptional hospitality in Bhadrapur-8, Jhapa, Nepal.')))">
     <meta property="og:url" content="@yield('canonical', url()->current())">
-    <meta property="og:image" content="@yield('og_image', asset('storage/site/hero-1.jpg'))">
+    {{-- Only a real hotel photo is ever shared as the preview image; pages set
+         og_image when they have one (none until client photos are uploaded). --}}
+    @hasSection('og_image')
+    <meta property="og:image" content="@yield('og_image')">
+    @endif
 
     <!-- TWITTER CARD -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="@yield('og_title', trim($__env->yieldContent('title', 'Newwoodland Hotel and Lounge | Hotel in Bhadrapur-8, Jhapa')))">
-    <meta name="twitter:description" content="@yield('og_description', trim($__env->yieldContent('meta_description', 'Newwoodland Hotel and Lounge offers luxury accommodation, premium dining, modern facilities, and exceptional hospitality in Bhadrapur-8, Jhapa, Nepal.')))">
-    <meta name="twitter:image" content="@yield('og_image', asset('storage/site/hero-1.jpg'))">
+    <meta name="twitter:card" content="{{ $__env->hasSection('og_image') ? 'summary_large_image' : 'summary' }}">
+    <meta name="twitter:title" content="@yield('og_title', trim($__env->yieldContent('title', 'Newwoodland Hotel & Lounge | Hotel in Bhadrapur-8, Jhapa')))">
+    <meta name="twitter:description" content="@yield('og_description', trim($__env->yieldContent('meta_description', 'Newwoodland Hotel & Lounge offers luxury accommodation, premium dining, modern facilities, and exceptional hospitality in Bhadrapur-8, Jhapa, Nepal.')))">
+    @hasSection('og_image')
+    <meta name="twitter:image" content="@yield('og_image')">
+    @endif
 
     @stack('structured_data')
 

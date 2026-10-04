@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreFacilityRequest;
 use App\Models\Facility;
+use App\Services\AuditLogService;
 use Illuminate\Support\Facades\Cache;
 
 class FacilityController extends Controller
@@ -21,13 +22,15 @@ class FacilityController extends Controller
         return view('admin.facilities.create');
     }
 
-    public function store(StoreFacilityRequest $request)
+    public function store(StoreFacilityRequest $request, AuditLogService $auditLog)
     {
         $data = $request->validated();
         $data['show_on_homepage'] = $request->boolean('show_on_homepage');
         $data['sort_order'] = (Facility::max('sort_order') ?? 0) + 1;
 
-        Facility::create($data);
+        $facility = Facility::create($data);
+
+        $auditLog->log('facility.created', 'facility', $facility->id, "Created facility \"{$facility->title}\".");
 
         Cache::forget('home.page.data');
         Cache::forget('facilities.page.data');
@@ -40,12 +43,15 @@ class FacilityController extends Controller
         return view('admin.facilities.edit', compact('facility'));
     }
 
-    public function update(StoreFacilityRequest $request, Facility $facility)
+    public function update(StoreFacilityRequest $request, Facility $facility, AuditLogService $auditLog)
     {
+        $before = $facility->getAttributes();
         $data = $request->validated();
         $data['show_on_homepage'] = $request->boolean('show_on_homepage');
 
         $facility->update($data);
+
+        $auditLog->logChanges('facility.updated', 'facility', $facility, "Updated facility \"{$facility->title}\".", $before);
 
         Cache::forget('home.page.data');
         Cache::forget('facilities.page.data');
@@ -53,9 +59,11 @@ class FacilityController extends Controller
         return redirect()->route('admin.facilities.index')->with('success', 'Facility updated.');
     }
 
-    public function destroy(Facility $facility)
+    public function destroy(Facility $facility, AuditLogService $auditLog)
     {
         $facility->delete();
+
+        $auditLog->log('facility.deleted', 'facility', $facility->id, "Deleted facility \"{$facility->title}\".");
 
         Cache::forget('home.page.data');
         Cache::forget('facilities.page.data');

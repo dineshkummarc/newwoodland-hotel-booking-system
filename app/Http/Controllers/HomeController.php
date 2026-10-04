@@ -15,11 +15,12 @@ class HomeController extends Controller
     {
         $data = Cache::remember('home.page.data', now()->addMinutes(30), function () {
             return [
-                'featuredRooms' => Room::active()->with(['images', 'amenities'])
-                    ->where('is_featured', true)
-                    ->orderBy('created_at', 'desc')
-                    ->take(6)
-                    ->get(),
+                'featuredRooms' => Room::onePerType(
+                    Room::active()->with(['images', 'amenities'])
+                        ->where('is_featured', true)
+                        ->orderBy('created_at', 'desc')
+                        ->get()
+                )->take(6),
                 'facilities' => Facility::homepage()->orderBy('sort_order')->get(),
                 'testimonials' => Testimonial::orderBy('created_at', 'desc')->take(6)->get(),
                 'faqs' => Faq::orderBy('sort_order')->get(),

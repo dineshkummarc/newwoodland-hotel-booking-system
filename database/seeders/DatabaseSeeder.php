@@ -19,7 +19,6 @@ class DatabaseSeeder extends Seeder
             FacilitySeeder::class,
             TestimonialSeeder::class,
             FaqSeeder::class,
-            GalleryImageSeeder::class,
             SettingSeeder::class,
             AdminSeeder::class,
         ]);

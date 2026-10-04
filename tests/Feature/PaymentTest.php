@@ -11,11 +11,12 @@ use App\Models\Setting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
+use Tests\Concerns\ActsAsBookingGuest;
 use Tests\TestCase;
 
 class PaymentTest extends TestCase
 {
-    use RefreshDatabase;
+    use ActsAsBookingGuest, RefreshDatabase;
 
     protected function pendingBooking(array $overrides = []): Booking
     {
@@ -128,8 +129,8 @@ class PaymentTest extends TestCase
 
         $response->assertRedirect(route('booking.confirmation', $booking->confirmation_code));
 
-        Mail::assertSent(BookingConfirmationMail::class);
-        Mail::assertSent(NewBookingNotificationMail::class);
+        Mail::assertQueued(BookingConfirmationMail::class);
+        Mail::assertQueued(NewBookingNotificationMail::class);
     }
 
     public function test_gateway_reporting_incomplete_status_does_not_confirm_booking(): void
@@ -146,9 +147,11 @@ class PaymentTest extends TestCase
         $payment->refresh();
         $booking->refresh();
 
-        $this->assertEquals(Payment::STATUS_FAILED, $payment->status);
+        // eSewa PENDING means money may be in flight: NOT confirmed, but also
+        // NOT failed — it stays pending for reconciliation to settle later.
+        $this->assertEquals(Payment::STATUS_PENDING, $payment->status);
         $this->assertEquals(Booking::STATUS_PENDING, $booking->status);
-        Mail::assertNothingSent();
+        Mail::assertNothingOutgoing();
     }
 
     public function test_amount_mismatch_between_gateway_and_booking_is_rejected(): void
@@ -168,7 +171,7 @@ class PaymentTest extends TestCase
 
         $this->assertEquals(Payment::STATUS_FAILED, $payment->status);
         $this->assertEquals(Booking::STATUS_PENDING, $booking->status);
-        Mail::assertNothingSent();
+        Mail::assertNothingOutgoing();
     }
 
     public function test_tampered_signature_is_rejected(): void
@@ -178,7 +181,8 @@ class PaymentTest extends TestCase
         $this->post(route('booking.pay.initiate', $booking->confirmation_code));
         $payment = Payment::first();
 
-        $this->fakeGatewayStatus($payment);
+        // eSewa itself has no payment for this transaction.
+        $this->fakeGatewayStatus($payment, status: 'NOT_FOUND');
 
         $payload = $this->returnPayload($payment);
         $decoded = json_decode(base64_decode($payload), true);
@@ -191,8 +195,12 @@ class PaymentTest extends TestCase
         $payment->refresh();
         $booking->refresh();
 
-        $this->assertEquals(Payment::STATUS_FAILED, $payment->status);
+        // A forged "COMPLETE" redirect decides nothing: only eSewa's own
+        // status API does, and it has no payment — nothing is paid/confirmed.
+        $this->assertEquals(Payment::STATUS_PENDING, $payment->status);
+        $this->assertFalse($booking->isPaid());
         $this->assertEquals(Booking::STATUS_PENDING, $booking->status);
+        Mail::assertNothingOutgoing();
     }
 
     public function test_cancelling_at_the_gateway_before_any_data_is_returned_sends_customer_back_to_their_booking(): void
@@ -254,7 +262,7 @@ class PaymentTest extends TestCase
         $this->get(route('payment.esewa.success', ['data' => $payload])); // refresh / duplicate callback
 
         $this->assertDatabaseCount('payments', 1);
-        Mail::assertSent(BookingConfirmationMail::class, 1);
+        Mail::assertQueued(BookingConfirmationMail::class, 1);
     }
 
     public function test_already_paid_booking_cannot_be_paid_again(): void
@@ -340,6 +348,9 @@ class PaymentTest extends TestCase
         $this->post(route('booking.pay.initiate', $booking->confirmation_code));
         $payment = Payment::first();
 
+        // The failure redirect is verified with eSewa like any other return.
+        $this->fakeGatewayStatus($payment, status: 'CANCELED');
+
         $response = $this->get(route('payment.esewa.failure', [
             'data' => $this->returnPayload($payment, status: 'CANCELED'),
         ]));
@@ -347,7 +358,7 @@ class PaymentTest extends TestCase
         $payment->refresh();
         $booking->refresh();
 
-        $this->assertEquals(Payment::STATUS_FAILED, $payment->status);
+        $this->assertEquals(Payment::STATUS_CANCELLED, $payment->status);
         $this->assertEquals(Booking::STATUS_PENDING, $booking->status);
         $response->assertRedirect(route('booking.confirmation', $booking->confirmation_code));
     }

@@ -14,6 +14,13 @@
     --muted: #7a6763;
     --cream: #faf5ee;
     --radius-lg: 1rem;
+    /* Deep antique gold for small gold text on white/ivory. --gold-dark
+       (#b8942c) is ~2.9:1 on white — too faint for 13px labels; this is
+       ~5.5:1 on white and ~5:1 on ivory while still reading as gold. */
+    --gold-text: #806318;
+    --label: #5a4744;
+    /* Bootstrap's validation red (#dc3545) only just clears 4.5:1; deepen it. */
+    --bs-form-invalid-color: #b02a37;
 }
 
 body {
@@ -21,6 +28,29 @@ body {
     color: var(--ink);
     background-color: #ffffff;
 }
+
+/* ===================== READING TYPOGRAPHY =====================
+   Body copy stays at Bootstrap's 16px (Poppins has a large x-height, so
+   16px already reads generously); paragraphs and list copy get a more
+   open line-height than Bootstrap's 1.5. */
+main p,
+main li { line-height: 1.65; }
+
+/* Bootstrap's .lead is Light (300) — too thin for Poppins over burgundy. */
+.lead {
+    font-weight: 400;
+    font-size: clamp(1.0625rem, 1rem + .4vw, 1.25rem);
+}
+
+/* Banner intros use .text-white-50, which is ~3.9:1 on burgundy — below
+   AA for body-size text. Lift it while keeping it softer than headings. */
+.lead.text-white-50 { color: rgba(255, 255, 255, .86) !important; }
+
+.page-banner h1 { overflow-wrap: break-word; }
+
+.form-text { font-size: .875rem; }
+.invalid-feedback { font-size: .875rem; font-weight: 500; }
+.alert.small { font-size: .9375rem; }
 
 .font-heading,
 h1, h2, h3, h4, .section-title, .brand-text {
@@ -106,7 +136,7 @@ a {
 .top-header {
     background: var(--emerald-dark);
     color: #e8f3ee;
-    font-size: .85rem;
+    font-size: .875rem;
     padding: .5rem 0;
 }
 
@@ -200,6 +230,17 @@ a {
     color: #fff;
 }
 
+.page-banner > .container { position: relative; z-index: 1; }
+
+/* Home hero with the client's photo: darken it so the white text holds contrast. */
+.page-banner--photo::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(42, 18, 21, .55), rgba(42, 18, 21, .78));
+    pointer-events: none;
+}
+
 .page-banner::after,
 #hero::after {
     content: "";
@@ -218,7 +259,7 @@ a {
     background: rgba(255, 255, 255, .12);
     padding: .5rem 1.1rem;
     border-radius: 50px;
-    font-size: .85rem;
+    font-size: .875rem;
     margin-bottom: 1.25rem;
 }
 
@@ -284,9 +325,9 @@ a {
 .section-subtitle {
     text-transform: uppercase;
     letter-spacing: 2px;
-    font-size: .8rem;
+    font-size: .8125rem;
     font-weight: 600;
-    color: var(--gold-dark);
+    color: var(--gold-text);
 }
 
 .section-title {
@@ -307,10 +348,11 @@ a {
 }
 
 .booking-label {
-    font-size: .8rem;
+    font-size: .875rem;
     font-weight: 600;
     text-transform: uppercase;
-    color: var(--muted);
+    letter-spacing: .03em;
+    color: var(--label);
     margin-bottom: .35rem;
     display: block;
 }
@@ -340,7 +382,7 @@ a {
     align-items: center;
     gap: .5rem;
     color: var(--muted);
-    font-size: .9rem;
+    font-size: .9375rem;
 }
 
 .booking-benefits i { color: var(--gold); }
@@ -363,9 +405,13 @@ a {
     color: #201a06;
     padding: .3rem .8rem;
     border-radius: 50px;
-    font-size: .75rem;
+    font-size: .8125rem;
     font-weight: 700;
 }
+
+/* Card copy: a step below body text, a step above Bootstrap's .small. */
+.room-card p.small,
+.room-card ul.small { font-size: .9375rem; }
 
 .room-image, .room-gallery { position: relative; }
 
@@ -381,8 +427,53 @@ a {
     padding: 1rem 1.25rem;
 }
 .room-fact-chip i { font-size: 1.4rem; color: var(--emerald); }
-.room-fact-chip .room-fact-label { display: block; font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+.room-fact-chip .room-fact-label { display: block; font-size: .8125rem; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
 .room-fact-chip .room-fact-value { font-weight: 600; }
+
+/* Confirmed in-room amenities (partials/room-amenities) */
+.room-amenity-list { display: flex; flex-wrap: wrap; gap: .4rem; list-style: none; padding: 0; margin: 0; }
+.room-amenity-list li {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    font-size: .875rem;
+    line-height: 1.4;
+    color: var(--ink);
+    background: var(--cream);
+    border: 1px solid rgba(212, 175, 55, .35);
+    border-radius: 999px;
+    padding: .25rem .7rem;
+}
+.room-amenity-list li i { color: var(--emerald); }
+/* Terms & Conditions — numbered sections of short rules */
+.terms-document h2 { margin: 2rem 0 .75rem; padding-bottom: .5rem; border-bottom: 1px solid rgba(212, 175, 55, .35); }
+.terms-document h2:first-of-type { margin-top: 0; }
+.terms-list { list-style: none; padding: 0; margin: 0; color: var(--muted); }
+.terms-list li { position: relative; padding-left: 1.5rem; margin-bottom: .55rem; line-height: 1.65; }
+.terms-list li::before { content: "\2022"; position: absolute; left: .35rem; color: var(--gold); font-weight: 700; }
+
+/* Facility card highlights — plain lines, no bullets */
+.facility-highlights { list-style: none; padding: 0; margin: 0; color: var(--muted); }
+.facility-highlights li { margin-bottom: .35rem; }
+.facility-highlights li:last-child { margin-bottom: 0; }
+
+/* Home page offer / satisfaction strip */
+.home-highlights { background: var(--emerald); color: #fff; }
+.home-highlights .small { color: rgba(255, 255, 255, .75); }
+.home-highlights__badge {
+    flex-shrink: 0;
+    background: var(--gold);
+    color: var(--emerald-dark);
+    font-weight: 700;
+    border-radius: .75rem;
+    padding: .6rem .9rem;
+    letter-spacing: .5px;
+}
+
+.room-price-on-request { font-size: 1rem; color: var(--muted); font-style: italic; }
+
+/* Keep long room descriptions to a comfortable line length. */
+.room-description p { max-width: 70ch; }
 
 .room-gallery-thumbs .gallery-card img { cursor: pointer; transition: transform .3s ease; }
 .room-gallery-thumbs .gallery-card:hover img { transform: scale(1.06); }
@@ -396,17 +487,20 @@ a {
     color: #14532d;
     padding: .4rem 1rem;
     border-radius: 50px;
-    font-size: .82rem;
+    font-size: .875rem;
     font-weight: 600;
 }
+
+/* Dark green on Bootstrap's grey is ~1.8:1 — use white for the grey variants. */
+.availability-badge.bg-secondary { color: #fff; }
 
 .facility-category-tag {
     display: inline-block;
     background: rgba(212, 175, 55, .15);
-    color: var(--gold-dark);
+    color: var(--gold-text);
     padding: .3rem .8rem;
     border-radius: 50px;
-    font-size: .72rem;
+    font-size: .8125rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: .4px;
@@ -470,7 +564,7 @@ a {
 }
 
 .faq-item.active .faq-answer {
-    max-height: 300px;
+    max-height: 1000px; /* 300px clipped longer answers on narrow phones */
     padding-bottom: 1.1rem;
 }
 
@@ -576,12 +670,12 @@ a {
 .payment-method-card__label {
     display: block;
     font-weight: 600;
-    font-size: .95rem;
+    font-size: 1rem;
 }
 
 .payment-method-card__status {
     display: block;
-    font-size: .78rem;
+    font-size: .875rem;
 }
 
 .payment-method-card--active {
@@ -610,6 +704,32 @@ a {
     outline-offset: 2px;
 }
 
+/* Selectable method (radio inside the card label) */
+.payment-method-option { cursor: pointer; position: relative; }
+.payment-method-option__input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+}
+.payment-method-option:has(.payment-method-option__input:checked) {
+    border-color: var(--emerald);
+    background: var(--cream);
+    box-shadow: 0 0 0 2px var(--emerald);
+}
+.payment-method-option:has(.payment-method-option__input:checked)::after {
+    content: "\F26A"; /* bootstrap-icons check-circle-fill */
+    font-family: "bootstrap-icons";
+    position: absolute;
+    top: .4rem;
+    right: .55rem;
+    color: var(--emerald);
+}
+.payment-method-option:has(.payment-method-option__input:focus-visible) {
+    outline: 3px solid var(--gold);
+    outline-offset: 2px;
+}
+
 /* ===================== FOOTER ===================== */
 #footer {
     background: var(--emerald-dark);
@@ -619,7 +739,7 @@ a {
 
 #footer h4 { color: #fff; font-weight: 600; margin-bottom: 1.25rem; }
 
-.footer-text { font-size: .9rem; line-height: 1.7; }
+.footer-text { font-size: .9375rem; line-height: 1.7; }
 
 .footer-social a {
     display: inline-flex;
@@ -644,8 +764,10 @@ a {
 .footer-contact li { margin-bottom: .8rem; display: flex; align-items: flex-start; gap: .25rem; }
 .footer-contact a { color: rgba(255, 255, 255, .85); }
 
-.footer-bottom p { margin: 0; font-size: .85rem; }
-.footer-bottom-links a { font-size: .85rem; }
+.footer-bottom p { margin: 0; font-size: .875rem; }
+.footer-bottom-links a { font-size: .875rem; }
+/* .text-white-50 on the dark footer is ~4.4:1; nudge it past AA. */
+#footer .text-white-50 { color: rgba(255, 255, 255, .72) !important; }
 .footer-bottom-links a:hover { color: var(--gold) !important; }
 
 .scroll-top {
@@ -676,7 +798,7 @@ a {
     display: inline-block;
     padding: .3rem .8rem;
     border-radius: 50px;
-    font-size: .75rem;
+    font-size: .8125rem;
     font-weight: 600;
     text-transform: capitalize;
 }
@@ -690,9 +812,72 @@ a {
 .breadcrumb-item a { color: var(--emerald); }
 .breadcrumb-item.active { color: var(--muted); }
 
+/* ===================== ACCOUNT RECOVERY / PHONE ===================== */
+.recovery-tabs {
+    gap: .5rem;
+    padding: .35rem;
+    background: var(--cream);
+    border-radius: 50px;
+}
+.recovery-tabs .nav-link {
+    border-radius: 50px;
+    color: var(--emerald);
+    font-weight: 600;
+    font-size: .92rem;
+}
+.recovery-tabs .nav-link.active {
+    background: var(--emerald);
+    color: #fff;
+}
+
+.phone-input-group {
+    display: flex;
+    gap: .5rem;
+}
+.phone-input-group .phone-country-select {
+    flex: 0 0 42%;
+    max-width: 42%;
+    text-overflow: ellipsis;
+}
+.phone-input-group .form-control { flex: 1 1 auto; min-width: 0; }
+
+.otp-input {
+    font-size: 1.6rem;
+    letter-spacing: .6em;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    padding-left: .6em; /* balance trailing letter-spacing */
+}
+
+.btn-gold:disabled {
+    opacity: .75;
+    cursor: wait;
+    transform: none;
+    box-shadow: none;
+}
+
 @media (min-width: 992px) and (max-width: 1199.98px) {
     .header .nav-link { margin: 0 .35rem; font-size: .92rem; }
     .btn-book { padding: .5rem 1.1rem; font-size: .92rem; }
+}
+
+/* Desktop header is one non-wrapping row (logo, six links, Sign In,
+   Register, Book Now). Measured in the browser, that row needed ~1,167px
+   in the 1,116px container at 1200–1399px (e.g. 1366px laptops — "Book Now"
+   was pushed off-screen) and ~1,341px in the 1,296px container from 1400px.
+   Spacing is tightened per range so the row fits with room to spare. */
+@media (min-width: 1200px) and (max-width: 1399.98px) {
+    .header .brand-text { font-size: 1.15rem; }
+    .header .navbar-brand svg { height: 34px !important; }
+    .header .nav-link { margin: 0 .3rem; font-size: .9rem; }
+    .header .navbar-collapse > .d-flex { gap: .4rem !important; }
+    .btn-book { padding: .45rem 1rem; font-size: .9rem; }
+}
+
+@media (min-width: 1400px) {
+    .header .brand-text { font-size: 1.4rem; }
+    .header .nav-link { margin: 0 .45rem; }
+    .header .navbar-collapse > .d-flex { gap: .75rem !important; }
 }
 
 @media (max-width: 991.98px) {
@@ -704,10 +889,99 @@ a {
     .room-card .border-top.pt-3 { flex-direction: column; align-items: stretch !important; gap: .75rem; }
     .room-card .border-top.pt-3 .d-flex.gap-2 { width: 100%; }
     .room-card .border-top.pt-3 .d-flex.gap-2 a { flex: 1; text-align: center; }
+    .phone-input-group { flex-direction: column; }
+    .phone-input-group .phone-country-select { flex-basis: auto; max-width: 100%; }
 }
 
 @media print {
     .header, footer, .scroll-top, .page-banner::after { display: none !important; }
     body { background: #fff; }
     .shadow-sm, .shadow { box-shadow: none !important; }
+}
+
+/* ===================== PHOTO PLACEHOLDER ===================== */
+/* Stands in for a hotel photo the client hasn't provided yet
+   (partials/photo-placeholder). Fills its frame; the frame sets the size. */
+.photo-placeholder {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: .45rem;
+    width: 100%;
+    height: 100%;
+    padding: 1.25rem;
+    text-align: center;
+    color: rgba(255, 255, 255, .88);
+    background:
+        radial-gradient(circle at 25% 20%, rgba(212, 175, 55, .28), transparent 55%),
+        linear-gradient(135deg, var(--emerald-dark), var(--emerald-light));
+}
+.photo-placeholder::before {
+    content: "";
+    position: absolute;
+    inset: .75rem;
+    border: 1px solid rgba(212, 175, 55, .35);
+    border-radius: .6rem;
+    pointer-events: none;
+}
+.photo-placeholder i { font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.4rem); color: var(--gold); line-height: 1; }
+.photo-placeholder__label { font-family: 'Playfair Display', serif; font-size: 1.05rem; line-height: 1.3; color: #fff; }
+.photo-placeholder__note {
+    padding: .15rem .65rem;
+    border: 1px dashed rgba(212, 175, 55, .7);
+    border-radius: 50px;
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+.photo-frame { position: relative; overflow: hidden; }
+.photo-frame--card { height: 240px; }
+.photo-frame--card-sm { height: 200px; }
+.photo-frame--feature { aspect-ratio: 16 / 9; max-height: 460px; }
+.photo-frame--intro { aspect-ratio: 4 / 3; }
+.photo-frame--gallery { min-height: 280px; }
+.photo-frame--gallery .photo-placeholder__label { font-size: 1.35rem; }
+
+/* Home hero while the exterior photo is pending: the standard burgundy
+   banner, with a discreet tag naming the photo that belongs here. */
+.hero-photo-note {
+    position: absolute;
+    left: 50%;
+    bottom: 1.25rem;
+    z-index: 1;
+    transform: translateX(-50%);
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    max-width: calc(100% - 2rem);
+    padding: .3rem .9rem;
+    border: 1px dashed rgba(212, 175, 55, .7);
+    border-radius: 50px;
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--gold);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* About page styles live in public/css/about.css (loaded on that page only). */
+
+/* Pre-arrival policies (partials/stay-policies) include cancellation charges —
+   keep them just under body size rather than Bootstrap's 14px .small. */
+.stay-policies { font-size: .9375rem; }
+
+/* Long email addresses in the contact cards must wrap on 320px phones. */
+.contact-card p { overflow-wrap: anywhere; }
+
+/* Bootstrap's .g-5 gutter (3rem) is wider than the container's phone
+   padding, which pushed Home/Room/Contact 12px past the screen edge. */
+@media (max-width: 575.98px) {
+    .row.g-5 { --bs-gutter-x: 1.5rem; }
 }

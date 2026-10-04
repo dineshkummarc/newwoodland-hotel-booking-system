@@ -22,7 +22,7 @@
                     <path d="M 260,190 Q 250,150 260,125 Q 280,135 320,145 Q 290,165 260,190 Z" fill="#800000" />
                     <path d="M 245,190 L 255,190 L 258,240 L 242,240 Z" fill="#4a1525" />
                 </svg>
-                <span class="brand-text">Newwoodland <span>Hotel and Lounge</span></span>
+                <span class="brand-text">Newwoodland <span>Hotel &amp; Lounge</span></span>
             </a>
 
             <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,6 +59,8 @@
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li><a class="dropdown-item" href="{{ route('account.bookings') }}"><i class="bi bi-calendar3 me-2"></i>My Bookings</a></li>
+                                <li><a class="dropdown-item" href="{{ route('account.profile') }}"><i class="bi bi-person me-2"></i>Profile &amp; Password</a></li>
+                                <li><a class="dropdown-item" href="{{ route('account.phone') }}"><i class="bi bi-phone me-2"></i>Phone Number</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form action="{{ route('logout') }}" method="POST" class="m-0">

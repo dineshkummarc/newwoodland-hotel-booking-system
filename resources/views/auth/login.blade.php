@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Sign In | Newwoodland Hotel and Lounge')
+@section('title', 'Sign In | Newwoodland Hotel & Lounge')
 @section('meta_robots', 'noindex, follow')
 
 @section('content')

@@ -1,9 +1,11 @@
 @extends('layouts.app')
 
-@section('title', $room->name . ' | Newwoodland Hotel and Lounge')
+@section('title', $room->name . ' | Newwoodland Hotel & Lounge')
 @section('meta_description', $room->short_description ?? Str::limit($room->description, 155))
 @section('canonical', route('rooms.show', $room->slug))
-@section('og_image', $room->primaryImage() ? asset('storage/'.$room->primaryImage()->path) : asset('assets/images/og-default.jpg'))
+@if($room->primaryImage())
+    @section('og_image', asset('storage/'.$room->primaryImage()->path))
+@endif
 
 @push('structured_data')
 <script type="application/ld+json">
@@ -13,13 +15,16 @@
     "name": "{{ $room->name }}",
     "description": {!! json_encode($room->short_description ?? Str::limit($room->description, 200), JSON_HEX_TAG | JSON_HEX_AMP) !!},
     @if($room->primaryImage())"image": "{{ asset('storage/'.$room->primaryImage()->path) }}",@endif
+    @if($room->hasPrice())
     "offers": {
         "@@type": "Offer",
         "priceCurrency": "NPR",
         "price": "{{ (string) $room->price_per_night }}",
-        "availability": "{{ $room->is_active ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock' }}",
+        "availability": "{{ $room->isBookable() ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock' }}",
         "url": "{{ route('rooms.show', $room->slug) }}"
-    }
+    },
+    @endif
+    "url": "{{ route('rooms.show', $room->slug) }}"
 }
 </script>
 @endpush
@@ -55,42 +60,56 @@
                 <div class="room-gallery mb-4">
                     @if($room->images->isNotEmpty())
                         <div class="gallery-card overflow-hidden rounded-4 shadow-lg mb-3">
-                            <img src="{{ asset('storage/'.$room->primaryImage()->path) }}" alt="{{ $room->name }}" class="img-fluid w-100" style="max-height: 460px; object-fit: cover;">
+                            <img src="{{ asset('storage/'.$room->primaryImage()->path) }}" alt="{{ $room->name }} at Newwoodland Hotel &amp; Lounge" class="img-fluid w-100" style="max-height: 460px; object-fit: cover;" decoding="async">
                         </div>
                         @if($room->images->count() > 1)
                         <div class="row g-2 room-gallery-thumbs">
                             @foreach($room->images as $image)
                             <div class="col-3">
                                 <div class="gallery-card overflow-hidden rounded-3 {{ $image->is_primary ? 'active-thumb' : '' }}">
-                                    <img src="{{ asset('storage/'.$image->path) }}" alt="{{ $room->name }} — photo {{ $loop->iteration }}" class="img-fluid w-100" style="height:90px; object-fit:cover;">
+                                    <img src="{{ asset('storage/'.$image->path) }}" alt="{{ $room->name }} at Newwoodland Hotel &amp; Lounge — photo {{ $loop->iteration }}" class="img-fluid w-100" style="height:90px; object-fit:cover;" loading="lazy" decoding="async">
                                 </div>
                             </div>
                             @endforeach
                         </div>
                         @endif
                     @else
-                        <div class="gallery-card overflow-hidden rounded-4 shadow-lg mb-3">
-                            <img src="https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1200&q=80" alt="{{ $room->name }}" class="img-fluid w-100" style="max-height: 460px; object-fit: cover;">
+                        {{-- CLIENT INPUT REQUIRED: room photos (Admin → Rooms → Edit) --}}
+                        <div class="photo-frame photo-frame--feature rounded-4 shadow-lg mb-3">
+                            @include('partials.photo-placeholder', ['label' => $room->name, 'icon' => 'bi-door-open', 'plural' => true])
                         </div>
                     @endif
                 </div>
 
                 {{-- ===================== QUICK FACTS ===================== --}}
                 <div class="room-quick-facts">
+                    @if($room->type_count > 1)
+                    <div class="room-fact-chip">
+                        <i class="bi bi-door-open"></i>
+                        <div>
+                            <span class="room-fact-label">Rooms of This Type</span>
+                            <span class="room-fact-value">{{ $room->type_count }}</span>
+                        </div>
+                    </div>
+                    @endif
+                    @if($room->max_guests)
                     <div class="room-fact-chip">
                         <i class="bi bi-people-fill"></i>
                         <div>
                             <span class="room-fact-label">Sleeps</span>
-                            <span class="room-fact-value">{{ $room->max_guests }} Guests</span>
+                            <span class="room-fact-value">{{ $room->min_guests ? "{$room->min_guests}–{$room->max_guests} Guests" : 'Up to '.$room->max_guests.' '.Str::plural('Guest', $room->max_guests) }}</span>
                         </div>
                     </div>
+                    @endif
+                    @if($room->bed_type)
                     <div class="room-fact-chip">
                         <i class="bi bi-lamp-fill"></i>
                         <div>
-                            <span class="room-fact-label">Bed Type</span>
-                            <span class="room-fact-value">{{ $room->bed_type ?? 'King Bed' }}</span>
+                            <span class="room-fact-label">Beds</span>
+                            <span class="room-fact-value">{{ $room->bed_type }}</span>
                         </div>
                     </div>
+                    @endif
                     @if($room->size_sqm)
                     <div class="room-fact-chip">
                         <i class="bi bi-aspect-ratio"></i>
@@ -112,19 +131,21 @@
                 </div>
 
                 {{-- ===================== DESCRIPTION ===================== --}}
+                @if($room->description)
                 <div class="room-description mb-5">
                     <h2 class="font-heading text-emerald mb-3">Room Overview</h2>
                     <p class="text-muted leading-relaxed">{{ $room->description }}</p>
                 </div>
+                @endif
 
                 {{-- ===================== AMENITIES & FACILITIES ===================== --}}
                 @if($room->amenities->isNotEmpty())
                 <div class="room-amenities mb-5 p-4 bg-light rounded-4 border">
-                    <h3 class="font-heading text-emerald mb-4">Amenities & Facilities</h3>
+                    <h3 class="font-heading text-emerald mb-4">In This Room</h3>
                     <div class="row g-4">
                         @foreach($room->amenities as $amenity)
                         <div class="col-md-4 col-6 d-flex align-items-center gap-3">
-                            <i class="bi {{ $amenity->icon ?: 'bi-check-circle' }} text-warning fs-3"></i>
+                            <i class="bi {{ $amenity->iconClass() }} text-warning fs-3"></i>
                             <span>{{ $amenity->label }}</span>
                         </div>
                         @endforeach
@@ -135,36 +156,54 @@
 
             <div class="col-lg-4">
                 <div class="booking-sidebar p-4 bg-light rounded-4 shadow-sm border position-sticky" style="top: 100px;">
-                    <span class="availability-badge mb-3"><i class="bi bi-check-circle-fill"></i> Available for Booking</span>
+                    @if($room->isBookable())
+                        <span class="availability-badge mb-3"><i class="bi bi-check-circle-fill"></i> Available for Booking</span>
+                    @elseif(! $room->hasPrice())
+                        <span class="availability-badge mb-3 bg-secondary"><i class="bi bi-telephone"></i> Rate on Request</span>
+                    @else
+                        <span class="availability-badge mb-3 bg-secondary"><i class="bi bi-tools"></i> {{ $room->availabilityStatusLabel() }}</span>
+                    @endif
                     <h4 class="mb-2">Book This Room</h4>
-                    <p class="text-muted mb-4">Starting at <strong>{{ npr($room->price_per_night) }}</strong> per night.</p>
-                    <a href="{{ route('booking', ['room' => $room->id]) }}" class="btn-gold w-100 py-3">Book Now</a>
+                    @if($room->hasPrice())
+                        <p class="text-muted mb-4"><strong>{{ npr($room->price_per_night) }}</strong> {{ $room->price_per_person ? "per person per night" : "per night" }}.</p>
+                    @endif
+                    @if($room->isBookable())
+                        <a href="{{ route('booking', ['room' => $room->id]) }}" class="btn-gold w-100 py-3">Book Now</a>
+                    @elseif(! $room->hasPrice())
+                        <a href="{{ route('contact') }}" class="btn-gold w-100 py-3">Contact Us for Rates</a>
+                        <p class="text-muted small mt-2 mb-0">Online booking for this room opens once its nightly rate is confirmed. Please contact the hotel to reserve it.</p>
+                    @else
+                        <button type="button" class="btn-gold w-100 py-3" disabled>Currently Unavailable</button>
+                        <p class="text-muted small mt-2 mb-0">This room is temporarily unavailable for new bookings. Please check back later or contact us directly.</p>
+                    @endif
 
                     {{-- ===================== AVAILABILITY CHECKER =====================
                          Reuses the site-wide availability AJAX (public/js/script.js),
                          which already wires up any [name="check_in"]/[name="check_out"]
                          pair alongside a #availabilityResult box — no new JS needed. --}}
+                    @if($room->hasPrice())
                     <div class="mt-4 pt-4 border-top">
                         <h6 class="mb-3">Check Availability</h6>
                         <input type="hidden" name="room_id" value="{{ $room->id }}">
                         <div class="row g-2">
-                            <div class="col-6">
+                            <div class="col-12 col-sm-6 col-lg-12 col-xxl-6">
                                 <label for="room-avail-checkin" class="booking-label">Check-in</label>
                                 <div class="booking-input">
                                     <i class="bi bi-calendar-event"></i>
-                                    <input id="room-avail-checkin" type="date" name="check_in" class="form-control form-control-sm">
+                                    <input id="room-avail-checkin" type="date" name="check_in" class="form-control">
                                 </div>
                             </div>
-                            <div class="col-6">
+                            <div class="col-12 col-sm-6 col-lg-12 col-xxl-6">
                                 <label for="room-avail-checkout" class="booking-label">Check-out</label>
                                 <div class="booking-input">
                                     <i class="bi bi-calendar-check"></i>
-                                    <input id="room-avail-checkout" type="date" name="check_out" class="form-control form-control-sm">
+                                    <input id="room-avail-checkout" type="date" name="check_out" class="form-control">
                                 </div>
                             </div>
                         </div>
                         <div id="availabilityResult" class="mt-3 small"></div>
                     </div>
+                    @endif
 
                     <div class="mt-4 pt-4 border-top text-muted small">
                         <h6 class="mb-3 text-dark">Good to Know</h6>
@@ -193,13 +232,23 @@
                         <div>
                             <div class="position-relative overflow-hidden rounded-3 mb-3">
                                 @if($related->badge_label)<span class="room-tag">{{ $related->badge_label }}</span>@endif
-                                <img src="{{ $related->primaryImage() ? asset('storage/'.$related->primaryImage()->path) : 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=800&q=80' }}" alt="{{ $related->name }}" class="img-fluid w-100" style="height: 200px; object-fit: cover;">
+                                @if($relatedImage = $related->primaryImage())
+                                    <img src="{{ asset('storage/'.$relatedImage->path) }}" alt="{{ $related->name }} at Newwoodland Hotel &amp; Lounge" class="img-fluid w-100" style="height: 200px; object-fit: cover;" loading="lazy" decoding="async">
+                                @else
+                                    <div class="photo-frame photo-frame--card-sm">
+                                        @include('partials.photo-placeholder', ['label' => $related->name, 'icon' => 'bi-door-open'])
+                                    </div>
+                                @endif
                             </div>
                             <h3 class="font-heading text-emerald h5">{{ $related->name }}</h3>
                             <p class="text-muted small mb-3">{{ $related->short_description ?? Str::limit($related->description, 90) }}</p>
                         </div>
                         <div class="border-top pt-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
-                            <span class="fs-5 font-heading fw-bold text-emerald">{{ npr($related->price_per_night) }}</span>
+                            @if($related->hasPrice())
+                                <span class="fs-5 font-heading fw-bold text-emerald">{{ npr($related->price_per_night) }}</span> <small class="text-muted">{{ $related->priceUnit() }}</small>
+                            @else
+                                <span class="room-price-on-request">Rate on request</span>
+                            @endif
                             <a href="{{ route('rooms.show', $related->slug) }}" class="btn btn-outline-dark py-2 fs-6">View Details</a>
                         </div>
                     </article>

@@ -92,6 +92,14 @@ return [
             'expire' => 60,
             'throttle' => 60,
         ],
+
+        // Staff accounts: separate token table, shorter-lived links.
+        'admins' => [
+            'provider' => 'admins',
+            'table' => 'admin_password_reset_tokens',
+            'expire' => 30,
+            'throttle' => 60,
+        ],
     ],
 
     /*

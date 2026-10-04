@@ -128,7 +128,14 @@ document.addEventListener('DOMContentLoaded', function () {
     var checkinInput = document.querySelector('[name="check_in"]');
     var checkoutInput = document.querySelector('[name="check_out"]');
     var roomSelect = document.querySelector('[name="room_id"]');
+    var guestsSelect = document.querySelector('[name="guests_label"]');
     var estimateBox = document.getElementById('bookingEstimate');
+    var roomsSelect = document.querySelector('[name="rooms_count"]');
+
+    function roomsCount() {
+        var n = roomsSelect ? parseInt(roomsSelect.value, 10) : 1;
+        return isNaN(n) || n < 1 ? 1 : n;
+    }
 
     function todayIso() {
         var d = new Date();
@@ -154,14 +161,22 @@ document.addEventListener('DOMContentLoaded', function () {
         var checkout = checkoutInput.value;
         var option = roomSelect.options[roomSelect.selectedIndex];
         var price = option ? parseFloat(option.getAttribute('data-price')) : NaN;
+        var perPerson = option && option.getAttribute('data-per-person') === '1';
+        var guests = guestsSelect ? parseInt(guestsSelect.value, 10) : NaN;
+
+        // A room priced per person needs an exact guest count to estimate.
+        if (perPerson && isNaN(guests)) { price = NaN; }
 
         if (checkin && checkout && !isNaN(price)) {
             var nights = Math.round((new Date(checkout) - new Date(checkin)) / 86400000);
             if (nights > 0) {
-                var total = nights * price;
+                var rooms = roomsCount();
+                var total = nights * price * (perPerson ? guests : 1) * rooms;
                 estimateBox.innerHTML =
                     '<strong>' + nights + '</strong> night' + (nights > 1 ? 's' : '') +
                     ' &times; NPR ' + price.toLocaleString() +
+                    (perPerson ? ' &times; <strong>' + guests + '</strong> guests' : '') +
+                    (rooms > 1 ? ' &times; <strong>' + rooms + '</strong> rooms' : '') +
                     ' = <strong>NPR ' + total.toLocaleString() + '</strong> (estimated)';
                 estimateBox.style.display = 'block';
                 return;
@@ -178,6 +193,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     if (checkoutInput) checkoutInput.addEventListener('change', updateEstimate);
     if (roomSelect) roomSelect.addEventListener('change', updateEstimate);
+    if (guestsSelect) guestsSelect.addEventListener('change', updateEstimate);
+    if (roomsSelect) roomsSelect.addEventListener('change', updateEstimate);
     updateEstimate();
 
     /* =========================================================
@@ -213,16 +230,34 @@ document.addEventListener('DOMContentLoaded', function () {
 
         availabilityBox.innerHTML = '<span class="text-muted">Checking availability&hellip;</span>';
 
-        fetch('/rooms/' + roomId + '/availability?check_in=' + checkin + '&check_out=' + checkout, {
+        var guestsParam = guestsSelect && guestsSelect.value ? '&guests_label=' + encodeURIComponent(guestsSelect.value) : '';
+
+        fetch('/rooms/' + roomId + '/availability?check_in=' + checkin + '&check_out=' + checkout + guestsParam, {
             headers: { 'Accept': 'application/json' },
         })
             .then(function (res) { return res.json(); })
             .then(function (data) {
-                if (data.available) {
+                var rooms = roomsCount();
+                // The server's estimate includes weekend/season/holiday rates.
+                if (data.estimate && estimateBox) {
+                    estimateBox.innerHTML =
+                        '<strong>' + data.estimate.nights + '</strong> night' + (data.estimate.nights > 1 ? 's' : '') +
+                        (rooms > 1 ? ' &times; <strong>' + rooms + '</strong> rooms' : '') +
+                        ' = <strong>NPR ' + Math.round(data.estimate.subtotal * rooms).toLocaleString() + '</strong> (estimated' +
+                        (data.estimate.varies ? ', includes weekend/seasonal rates' : '') + ')';
+                    estimateBox.style.display = 'block';
+                }
+                if (rooms > 1 && typeof data.free_rooms === 'number' && data.free_rooms < rooms) {
+                    availabilityBox.innerHTML = '<span class="text-danger"><i class="bi bi-x-circle-fill"></i> Only ' + data.free_rooms + ' room(s) of this type are available for these dates.</span>';
+                    if (submitBtn) submitBtn.disabled = true;
+                } else if (data.available) {
                     availabilityBox.innerHTML = '<span class="text-success"><i class="bi bi-check-circle-fill"></i> Room is available for these dates.</span>';
                     if (submitBtn) submitBtn.disabled = false;
                 } else {
-                    availabilityBox.innerHTML = '<span class="text-danger"><i class="bi bi-x-circle-fill"></i> Room is not available for these dates.</span>';
+                    // The server says why (same rules as the booking itself): dates
+                    // taken, past/too-far dates, stay too long, party too large…
+                    availabilityBox.innerHTML = '<span class="text-danger"><i class="bi bi-x-circle-fill"></i> <span class="availability-reason"></span></span>';
+                    availabilityBox.querySelector('.availability-reason').textContent = data.reason || 'Room is not available for these dates.';
                     if (submitBtn) submitBtn.disabled = true;
                 }
             })
@@ -234,7 +269,86 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-    [checkinInput, checkoutInput, roomSelect].forEach(function (el) {
+    [checkinInput, checkoutInput, roomSelect, guestsSelect, roomsSelect].forEach(function (el) {
         if (el) el.addEventListener('change', checkAvailability);
+    });
+
+    /* =========================================================
+       FORM LOADING STATE — <form data-loading-text="Sending…">
+       Disables the submit button (prevents double submits, e.g.
+       two SMS codes) and shows a spinner while the request runs.
+    ========================================================= */
+    document.querySelectorAll('form[data-loading-text]').forEach(function (form) {
+        form.addEventListener('submit', function (e) {
+            if (form.dataset.submitting) {
+                e.preventDefault();
+                return;
+            }
+            var btn = form.querySelector('[type="submit"]');
+            if (!btn) return;
+            form.dataset.submitting = '1';
+            btn.dataset.originalHtml = btn.innerHTML;
+            btn.disabled = true;
+            btn.setAttribute('aria-busy', 'true');
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>';
+            btn.appendChild(document.createTextNode(form.dataset.loadingText));
+        });
+    });
+
+    // Restore those buttons if the page comes back from the back/forward cache.
+    window.addEventListener('pageshow', function (e) {
+        if (!e.persisted) return;
+        document.querySelectorAll('form[data-submitting]').forEach(function (form) {
+            var btn = form.querySelector('[type="submit"]');
+            delete form.dataset.submitting;
+            if (btn && btn.dataset.originalHtml !== undefined) {
+                btn.innerHTML = btn.dataset.originalHtml;
+                btn.disabled = false;
+                btn.removeAttribute('aria-busy');
+            }
+        });
+    });
+
+    /* =========================================================
+       COUNTDOWNS — <el data-countdown="SECONDS"
+         data-countdown-template="Expires in {time}."
+         data-countdown-done="Expired."
+         data-countdown-enables="button-id">
+       The optional button stays disabled until the countdown ends.
+    ========================================================= */
+    document.querySelectorAll('[data-countdown]').forEach(function (el) {
+        var remaining = parseInt(el.dataset.countdown, 10) || 0;
+        var button = el.dataset.countdownEnables ? document.getElementById(el.dataset.countdownEnables) : null;
+        var endsAt = Date.now() + remaining * 1000;
+
+        function format(seconds) {
+            var m = Math.floor(seconds / 60);
+            var s = seconds % 60;
+            return m + ':' + (s < 10 ? '0' : '') + s;
+        }
+
+        function tick() {
+            var left = Math.max(0, Math.round((endsAt - Date.now()) / 1000));
+            if (left <= 0) {
+                el.textContent = el.dataset.countdownDone || '';
+                if (button) button.disabled = false;
+                return;
+            }
+            el.textContent = (el.dataset.countdownTemplate || '{time}').replace('{time}', format(left));
+            if (button) button.disabled = true;
+            setTimeout(tick, 1000);
+        }
+
+        tick();
+    });
+
+    /* =========================================================
+       OTP INPUT — digits only
+    ========================================================= */
+    document.querySelectorAll('.otp-input').forEach(function (input) {
+        input.addEventListener('input', function () {
+            var digits = input.value.replace(/\D/g, '').slice(0, 6);
+            if (digits !== input.value) input.value = digits;
+        });
     });
 });

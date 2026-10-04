@@ -24,6 +24,7 @@ class AdminSeeder extends Seeder
             'name' => 'Site Administrator',
             'email' => $email,
             'password' => $password,
+            'role' => Admin::ROLE_SUPER_ADMIN,
         ]);
 
         $this->command?->info('==================================================');

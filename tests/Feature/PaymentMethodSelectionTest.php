@@ -7,11 +7,12 @@ use App\Models\Payment;
 use App\Models\Room;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Route;
+use Tests\Concerns\ActsAsBookingGuest;
 use Tests\TestCase;
 
 class PaymentMethodSelectionTest extends TestCase
 {
-    use RefreshDatabase;
+    use ActsAsBookingGuest, RefreshDatabase;
 
     protected function pendingBooking(array $overrides = []): Booking
     {
@@ -25,16 +26,21 @@ class PaymentMethodSelectionTest extends TestCase
         ], $overrides));
     }
 
-    public function test_all_four_payment_methods_are_listed_on_the_payment_page(): void
+    public function test_accepted_methods_are_listed_and_khalti_never_appears(): void
     {
+        // Test env (phpunit.xml) leaves Fonepay and Bank Transfer switched
+        // off, so only eSewa is usable here. Paying 100% at the hotel is not
+        // a hotel payment option, so there is no cash method at checkout.
         $booking = $this->pendingBooking();
 
         $response = $this->get(route('booking.pay', $booking->confirmation_code));
 
         $response->assertOk();
-        foreach (['eSewa', 'Khalti', 'Fonepay', 'Bank Transfer'] as $label) {
-            $response->assertSee($label);
-        }
+        $response->assertSee('value="esewa"', false);
+        $response->assertDontSee('value="cash"', false);
+        $response->assertDontSee('Khalti');
+        $response->assertDontSee('Fonepay');
+        $response->assertDontSee('value="bank_transfer"', false);
     }
 
     public function test_esewa_is_presented_as_available_with_a_working_payment_form(): void
@@ -43,33 +49,45 @@ class PaymentMethodSelectionTest extends TestCase
 
         $response = $this->get(route('booking.pay', $booking->confirmation_code));
 
-        $response->assertSee(route('booking.pay.initiate', $booking->confirmation_code), false);
+        $response->assertSee(route('booking.pay.continue', $booking->confirmation_code), false);
+        $response->assertSee('name="payment_method" value="esewa"', false);
         $response->assertSee('Available');
+        $response->assertSee('Continue Payment');
     }
 
-    public function test_khalti_fonepay_and_bank_transfer_are_presented_as_unavailable(): void
+    public function test_unavailable_methods_are_not_rendered_at_all(): void
     {
         $booking = $this->pendingBooking();
 
         $response = $this->get(route('booking.pay', $booking->confirmation_code));
 
-        // The unavailable message is delivered via a data attribute (revealed
-        // in a modal on click, so it isn't in the static page text) — assert
-        // against the raw HTML rather than assertSeeText.
-        $response->assertSee('Khalti payment is currently unavailable. Please choose another payment method or contact the hotel.', false);
-        $response->assertSee('Fonepay payment is currently unavailable. Please choose another payment method or contact the hotel.', false);
-        $response->assertSee('Bank transfer details are currently unavailable. Please contact the hotel for payment instructions.', false);
-
-        // Rendered 3 times: once per unavailable method card.
-        $response->assertSeeTextInOrder(['Coming Soon', 'Coming Soon', 'Coming Soon']);
+        $response->assertDontSee('Coming Soon');
+        $response->assertDontSee('payment-method-card--disabled', false);
     }
 
-    public function test_disabled_payment_methods_are_disabled_by_config_not_hardcoded_markup(): void
+    public function test_khalti_stays_disabled_even_if_the_env_flag_is_set(): void
     {
+        // config/payments.php hard-codes Khalti off (the hotel does not accept
+        // it) and full payment at the hotel off (not a hotel payment option).
         $this->assertFalse(config('payments.methods.khalti.enabled'));
-        $this->assertFalse(config('payments.methods.fonepay.enabled'));
-        $this->assertFalse(config('payments.methods.bank_transfer.enabled'));
+        $this->assertFalse(config('payments.methods.cash.enabled'));
         $this->assertTrue(config('payments.methods.esewa.enabled'));
+        // Client-confirmed (2026-10-04): advance bookings are paid 100% in
+        // advance, so "pay part now" is off unless SPLIT_PAYMENT_ENABLED=true.
+        $this->assertFalse(config('payments.split_payment.enabled'));
+    }
+
+    public function test_khalti_cannot_be_selected_by_posting_it_directly(): void
+    {
+        config(['khalti.secret_key' => 'test_secret_key']);
+        $booking = $this->pendingBooking();
+
+        $this->post(route('booking.pay.continue', $booking->confirmation_code), ['payment_method' => 'khalti'])
+            ->assertRedirect(route('booking.pay', $booking->confirmation_code))
+            ->assertSessionHasErrors('payment_method');
+
+        $this->post(route('booking.pay.khalti.initiate', $booking->confirmation_code))->assertNotFound();
+        $this->assertDatabaseCount('payments', 0);
     }
 
     public function test_no_route_exists_to_confirm_a_booking_via_khalti_fonepay_or_bank_transfer(): void

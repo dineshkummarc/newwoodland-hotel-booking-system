@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Contact Us | Newwoodland Hotel and Lounge')
-@section('meta_description', 'Get in touch with Newwoodland Hotel and Lounge for reservations, inquiries, and special requests.')
+@section('title', 'Contact Us | Newwoodland Hotel & Lounge')
+@section('meta_description', 'Get in touch with Newwoodland Hotel & Lounge for reservations, inquiries, and special requests.')
 @section('canonical', route('contact'))
 
 @section('content')
@@ -27,7 +27,7 @@
     <div class="container">
         <div class="hero-content">
             <span class="section-subtitle text-warning">Get In Touch</span>
-            <h1 class="font-heading">Contact Newwoodland Hotel and Lounge</h1>
+            <h1 class="font-heading">Contact Newwoodland Hotel & Lounge</h1>
             <p class="lead text-white-50 max-w-700 mx-auto mt-3">
                 We are ready to assist you with reservations, inquiries, travel directions, and special requests.
             </p>
@@ -43,23 +43,26 @@
                     <div class="icon fs-1 text-warning mb-3"><i class="bi bi-geo-alt-fill"></i></div>
                     <h4 class="font-heading text-emerald mb-2">Our Location</h4>
                     <p class="text-muted mb-3">{{ $hotelAddress ?? 'Bhadrapur-8, Jhapa, Nepal' }}</p>
-                    <a href="#map" class="btn btn-sm btn-outline-dark rounded-pill px-4">View Map</a>
+                    <a href="#map" class="btn btn-outline-dark rounded-pill px-4">View Map</a>
                 </div>
             </div>
             <div class="col-lg-4 col-md-6">
                 <div class="contact-card p-4 bg-light rounded-4 shadow-sm border text-center h-100">
                     <div class="icon fs-1 text-warning mb-3"><i class="bi bi-telephone-fill"></i></div>
                     <h4 class="font-heading text-emerald mb-2">Call Us</h4>
-                    <p class="text-muted mb-3">{{ $hotelPhone ?? '+977 9801415107' }}</p>
-                    <a href="tel:{{ $hotelPhoneRaw ?? '+9779801415107' }}" class="btn btn-sm btn-outline-dark rounded-pill px-4">Call Now</a>
+                    <p class="text-muted mb-3">
+                        {{ $hotelPhone ?? '+977 9852690590' }}
+                        @if($hotelPhoneSecondary ?? null)<br>{{ $hotelPhoneSecondary }}@endif
+                    </p>
+                    <a href="tel:{{ $hotelPhoneRaw ?? '+9779852690590' }}" class="btn btn-outline-dark rounded-pill px-4">Call Now</a>
                 </div>
             </div>
             <div class="col-lg-4 col-md-6">
                 <div class="contact-card p-4 bg-light rounded-4 shadow-sm border text-center h-100">
                     <div class="icon fs-1 text-warning mb-3"><i class="bi bi-envelope-fill"></i></div>
                     <h4 class="font-heading text-emerald mb-2">Email Us</h4>
-                    <p class="text-muted mb-3">{{ $hotelEmail ?? 'info@newwoodlandhotel.com' }}</p>
-                    <a href="mailto:{{ $hotelEmail ?? 'info@newwoodlandhotel.com' }}" class="btn btn-sm btn-outline-dark rounded-pill px-4">Send Email</a>
+                    <p class="text-muted mb-3">{{ $hotelEmail ?? 'woodlandhotel146@gmail.com' }}</p>
+                    <a href="mailto:{{ $hotelEmail ?? 'woodlandhotel146@gmail.com' }}" class="btn btn-outline-dark rounded-pill px-4">Send Email</a>
                 </div>
             </div>
         </div>

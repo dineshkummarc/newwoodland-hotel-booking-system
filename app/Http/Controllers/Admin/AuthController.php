@@ -17,7 +17,11 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request)
     {
-        $credentials = $request->only('email', 'password');
+        // is_active is passed as an extra Eloquent credential constraint
+        // (not a password check) — a deactivated account simply fails to
+        // authenticate, indistinguishable from a wrong password, rather
+        // than leaking account-state through a different error message.
+        $credentials = $request->only('email', 'password') + ['is_active' => true];
 
         if (Auth::guard('admin')->attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();

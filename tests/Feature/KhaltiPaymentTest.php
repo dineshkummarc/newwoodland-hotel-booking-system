@@ -11,6 +11,7 @@ use App\Models\Setting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
+use Tests\Concerns\ActsAsBookingGuest;
 use Tests\TestCase;
 
 /**
@@ -25,7 +26,7 @@ use Tests\TestCase;
  */
 class KhaltiPaymentTest extends TestCase
 {
-    use RefreshDatabase;
+    use ActsAsBookingGuest, RefreshDatabase;
 
     protected function setUp(): void
     {
@@ -135,8 +136,8 @@ class KhaltiPaymentTest extends TestCase
         $this->assertEquals(Booking::STATUS_CONFIRMED, $booking->status);
         $response->assertRedirect(route('booking.confirmation', $booking->confirmation_code));
 
-        Mail::assertSent(BookingConfirmationMail::class);
-        Mail::assertSent(NewBookingNotificationMail::class);
+        Mail::assertQueued(BookingConfirmationMail::class);
+        Mail::assertQueued(NewBookingNotificationMail::class);
     }
 
     public function test_pending_lookup_status_does_not_confirm_booking(): void
@@ -153,12 +154,13 @@ class KhaltiPaymentTest extends TestCase
         $payment->refresh();
         $booking->refresh();
 
-        $this->assertEquals(Payment::STATUS_FAILED, $payment->status);
+        // Khalti's docs: "Pending" must be held — neither paid nor failed.
+        $this->assertEquals(Payment::STATUS_PENDING, $payment->status);
         $this->assertEquals(Booking::STATUS_PENDING, $booking->status);
-        Mail::assertNothingSent();
+        Mail::assertNothingOutgoing();
     }
 
-    public function test_user_canceled_status_is_treated_as_failure(): void
+    public function test_user_canceled_status_marks_the_payment_cancelled(): void
     {
         $booking = $this->pendingBooking();
         $this->fakeInitiate('pidx-cancel-1');
@@ -169,8 +171,10 @@ class KhaltiPaymentTest extends TestCase
 
         $payment = Payment::first();
         $payment->refresh();
-        $this->assertEquals(Payment::STATUS_FAILED, $payment->status);
+        $this->assertEquals(Payment::STATUS_CANCELLED, $payment->status);
+        $this->assertEquals(Booking::STATUS_PENDING, $booking->refresh()->status);
         $response->assertRedirect(route('booking.confirmation', $booking->confirmation_code));
+        $response->assertSessionHas('error', fn ($message) => str_contains($message, 'cancelled'));
     }
 
     public function test_amount_mismatch_between_gateway_and_booking_is_rejected(): void
@@ -189,7 +193,7 @@ class KhaltiPaymentTest extends TestCase
         $booking->refresh();
         $this->assertEquals(Payment::STATUS_FAILED, $payment->status);
         $this->assertEquals(Booking::STATUS_PENDING, $booking->status);
-        Mail::assertNothingSent();
+        Mail::assertNothingOutgoing();
     }
 
     public function test_unknown_pidx_is_handled_gracefully(): void
@@ -219,7 +223,7 @@ class KhaltiPaymentTest extends TestCase
         $this->get(route('payment.khalti.return', ['pidx' => 'pidx-dup-1'])); // refresh / duplicate
 
         $this->assertDatabaseCount('payments', 1);
-        Mail::assertSent(BookingConfirmationMail::class, 1);
+        Mail::assertQueued(BookingConfirmationMail::class, 1);
     }
 
     public function test_already_paid_booking_cannot_be_paid_again_via_khalti(): void

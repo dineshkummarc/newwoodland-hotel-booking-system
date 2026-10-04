@@ -42,7 +42,7 @@ class BookingCancellationTest extends TestCase
         $booking->refresh();
         $this->assertEquals(Booking::STATUS_CANCELLED, $booking->status);
         $this->assertNotNull($booking->cancelled_at);
-        Mail::assertSent(BookingCancelledMail::class);
+        Mail::assertQueued(BookingCancelledMail::class);
     }
 
     public function test_owner_can_cancel_a_confirmed_paid_booking_and_payment_is_untouched(): void
@@ -117,15 +117,31 @@ class BookingCancellationTest extends TestCase
 
         $response->assertRedirect();
         $response->assertSessionHas('error');
-        Mail::assertNothingSent();
+        Mail::assertNothingOutgoing();
     }
 
-    public function test_booking_cannot_be_cancelled_once_check_in_has_arrived(): void
+    public function test_booking_can_still_be_cancelled_free_on_the_arrival_day_before_check_in(): void
     {
         Mail::fake();
         $user = User::factory()->create();
         $booking = $this->futureBooking($user, [
             'check_in' => now()->toDateString(),
+            'check_out' => now()->addDays(2)->toDateString(),
+            'status' => Booking::STATUS_CONFIRMED,
+        ]);
+
+        $this->actingAs($user)->post(route('account.bookings.cancel', $booking->confirmation_code))
+            ->assertSessionHas('success');
+
+        $this->assertEquals(Booking::STATUS_CANCELLED, $booking->fresh()->status);
+    }
+
+    public function test_booking_cannot_be_cancelled_online_once_the_check_in_date_has_passed(): void
+    {
+        Mail::fake();
+        $user = User::factory()->create();
+        $booking = $this->futureBooking($user, [
+            'check_in' => now()->subDay()->toDateString(),
             'check_out' => now()->addDays(2)->toDateString(),
             'status' => Booking::STATUS_CONFIRMED,
         ]);
@@ -136,7 +152,7 @@ class BookingCancellationTest extends TestCase
         $response->assertSessionHas('error');
         $booking->refresh();
         $this->assertEquals(Booking::STATUS_CONFIRMED, $booking->status);
-        Mail::assertNothingSent();
+        Mail::assertNothingOutgoing();
     }
 
     public function test_booking_after_stay_has_completed_cannot_be_cancelled(): void
@@ -182,8 +198,8 @@ class BookingCancellationTest extends TestCase
 
         $this->actingAs($user)->post(route('account.bookings.cancel', $booking->confirmation_code));
 
-        Mail::assertSent(BookingCancelledMail::class);
-        Mail::assertSent(BookingCancelledAdminMail::class);
+        Mail::assertQueued(BookingCancelledMail::class);
+        Mail::assertQueued(BookingCancelledAdminMail::class);
     }
 
     public function test_configured_cancellation_window_blocks_cancellation_without_enough_notice(): void
@@ -202,7 +218,7 @@ class BookingCancellationTest extends TestCase
         $response->assertSessionHas('error');
         $booking->refresh();
         $this->assertEquals(Booking::STATUS_PENDING, $booking->status);
-        Mail::assertNothingSent();
+        Mail::assertNothingOutgoing();
     }
 
     public function test_configured_cancellation_window_allows_cancellation_with_enough_notice(): void

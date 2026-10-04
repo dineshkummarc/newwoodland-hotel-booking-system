@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'My Bookings | Newwoodland Hotel and Lounge')
+@section('title', 'My Bookings | Newwoodland Hotel & Lounge')
 @section('meta_robots', 'noindex, nofollow')
 
 @section('content')
@@ -24,6 +24,12 @@
         @if(session('error'))
             <div class="alert alert-danger">{{ session('error') }}</div>
         @endif
+        @unless(auth()->user()->hasVerifiedPhone())
+            <div class="alert alert-light border d-flex flex-wrap align-items-center justify-content-between gap-2">
+                <span><i class="bi bi-phone me-2 text-emerald"></i>Verify your phone number so you can recover your account by SMS.</span>
+                <a href="{{ route('account.phone') }}" class="text-emerald fw-semibold">Verify now</a>
+            </div>
+        @endunless
 
         @if($bookings->isEmpty())
             <div class="p-5 bg-white rounded-4 shadow-sm border text-center">
@@ -38,19 +44,20 @@
                         <div class="d-flex justify-content-between align-items-start mb-3">
                             <div>
                                 <span class="section-subtitle d-block">{{ $booking->confirmation_code }}</span>
-                                <h3 class="font-heading h5 mb-0">{{ $booking->room->name ?? 'Room unavailable' }}</h3>
+                                <h3 class="font-heading h5 mb-0">{{ $booking->roomNames('Room unavailable') }}</h3>
                             </div>
                             <span class="status {{ $booking->status }}">{{ ucfirst($booking->status) }}</span>
                         </div>
                         <table class="table table-sm mb-3">
-                            <tr><td class="text-muted">Check-in</td><td class="text-end fw-semibold">{{ $booking->check_in->format('D, d M Y') }}</td></tr>
-                            <tr><td class="text-muted">Check-out</td><td class="text-end fw-semibold">{{ $booking->check_out->format('D, d M Y') }}</td></tr>
+                            <tr><td class="text-muted">Check-in</td><td class="text-end fw-semibold">{{ $booking->checkInLabel() }}</td></tr>
+                            <tr><td class="text-muted">Check-out</td><td class="text-end fw-semibold">{{ $booking->checkOutLabel() }}</td></tr>
                             <tr><td class="text-muted">Nights</td><td class="text-end fw-semibold">{{ $booking->nights }}</td></tr>
                             <tr><td class="text-muted">Payment</td><td class="text-end fw-semibold">{{ $booking->isPaid() ? 'Paid' : 'Not paid' }}</td></tr>
                             <tr><td class="text-muted fw-semibold">Total</td><td class="text-end fw-bold text-emerald">{{ npr($booking->total_price) }}</td></tr>
                         </table>
                         <div class="d-flex gap-2 flex-wrap">
                             <a href="{{ route('booking.confirmation', $booking->confirmation_code) }}" class="btn-outline py-2 px-4">View Details</a>
+                            <a href="{{ route('account.bookings.invoice', $booking->confirmation_code) }}" class="btn-outline py-2 px-4"><i class="bi bi-file-earmark-pdf me-1"></i>Invoice (PDF)</a>
                             @if($booking->isCancellable($cancellationWindowHours))
                                 <button type="button" class="btn btn-outline-danger py-2 px-4" data-bs-toggle="modal" data-bs-target="#cancel-modal-{{ $booking->id }}">
                                     Cancel Booking
@@ -70,9 +77,16 @@
                             </div>
                             <div class="modal-body">
                                 <p>Are you sure you want to cancel this booking? This cannot be undone.</p>
-                                <p class="text-muted small">Our policy requires cancellation at least {{ $cancellationWindowHours }} hours before check-in.</p>
-                                @if($booking->isPaid())
-                                    <p class="text-muted small mb-0">A payment has already been received for this booking. Refunds are not processed automatically — our team will contact you after cancellation to arrange one.</p>
+                                @if($cancellationWindowHours > 0)
+                                    <p class="text-muted">Our policy requires cancellation at least {{ $cancellationWindowHours }} hours before check-in.</p>
+                                @endif
+                                @if($cancellationDeductionPercent ?? null)
+                                    <p class="text-muted"><strong>{{ $cancellationDeductionPercent }}% of the booking amount ({{ npr($booking->cancellationCharge($cancellationDeductionPercent)) }}) is deducted on cancellation.</strong></p>
+                                @else
+                                    <p class="text-muted"><strong>Cancellation before arrival is free — nothing is deducted.</strong></p>
+                                @endif
+                                @if($booking->amountPaid() > 0)
+                                    <p class="text-muted mb-0">A payment of {{ npr($booking->amountPaid()) }} has already been received for this booking. Refunds are not processed automatically — our team will contact you after cancellation to arrange the refund due ({{ npr($booking->refundDue((int) ($cancellationDeductionPercent ?? 0))) }}).</p>
                                 @endif
                             </div>
                             <div class="modal-footer">

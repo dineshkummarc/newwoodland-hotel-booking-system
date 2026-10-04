@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Book Your Stay | Newwoodland Hotel and Lounge')
-@section('meta_description', 'Reserve your room at Newwoodland Hotel and Lounge in Bhadrapur with a quick and easy booking request.')
+@section('title', 'Book Your Stay | Newwoodland Hotel & Lounge')
+@section('meta_description', 'Reserve your room at Newwoodland Hotel & Lounge in Bhadrapur with a quick and easy booking request.')
 @section('canonical', route('booking'))
 
 @section('content')
@@ -11,7 +11,7 @@
             <span class="section-subtitle text-warning">Instant Reservation</span>
             <h1 class="font-heading">Book Your Stay</h1>
             <p class="lead text-white-50 max-w-700 mx-auto mt-3">
-                Reserve your room at Newwoodland Hotel and Lounge in Bhadrapur with a quick and easy booking request.
+                Reserve your room at Newwoodland Hotel & Lounge in Bhadrapur with a quick and easy booking request.
             </p>
         </div>
     </div>
@@ -47,8 +47,8 @@
                         <select id="booking-room" name="room_id" class="form-select" required>
                             <option value="">Select Room</option>
                             @foreach($rooms as $room)
-                            <option value="{{ $room->id }}" data-price="{{ $room->price_per_night }}" {{ (old('room_id', request('room')) == $room->id) ? 'selected' : '' }}>
-                                {{ $room->name }} — {{ npr($room->price_per_night) }}/night
+                            <option value="{{ $room->id }}" data-price="{{ $room->price_per_night }}" data-per-person="{{ $room->price_per_person ? 1 : 0 }}" {{ $selectedRoomId == $room->id ? 'selected' : '' }}>
+                                {{ $room->name }} — {{ npr($room->price_per_night) }} {{ $room->priceUnit() }}
                             </option>
                             @endforeach
                         </select>
@@ -61,8 +61,18 @@
                             <option value="2 Adults" {{ old('guests_label') === '2 Adults' ? 'selected' : '' }}>2 Adults</option>
                             <option value="3 Adults" {{ old('guests_label') === '3 Adults' ? 'selected' : '' }}>3 Adults</option>
                             <option value="4 Adults" {{ old('guests_label') === '4 Adults' ? 'selected' : '' }}>4 Adults</option>
+                            <option value="5 Adults" {{ old('guests_label') === '5 Adults' ? 'selected' : '' }}>5 Adults</option>
                             <option value="Family" {{ old('guests_label') === 'Family' ? 'selected' : '' }}>Family</option>
                         </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="booking-rooms" class="booking-label">Rooms</label>
+                        <select id="booking-rooms" name="rooms_count" class="form-select">
+                            @for($n = 1; $n <= \App\Http\Requests\StoreBookingRequest::MAX_ROOMS; $n++)
+                            <option value="{{ $n }}" {{ (int) old('rooms_count', 1) === $n ? 'selected' : '' }}>{{ $n }} {{ Str::plural('room', $n) }}</option>
+                            @endfor
+                        </select>
+                        <div class="form-text">Booking more than one room? Guests above are per room.</div>
                     </div>
                     <div class="col-md-6">
                         <label for="booking-name" class="booking-label">Full Name *</label>
@@ -73,8 +83,11 @@
                         <input id="booking-email" type="email" name="email" class="form-control" value="{{ old('email') }}" required>
                     </div>
                     <div class="col-md-6">
-                        <label for="booking-phone" class="booking-label">Phone Number *</label>
-                        <input id="booking-phone" type="tel" name="phone" class="form-control" value="{{ old('phone') }}" required>
+                        @include('partials.phone-input', [
+                            'id' => 'booking-phone',
+                            'label' => 'Phone Number',
+                            'required' => true,
+                        ])
                     </div>
                     <div class="col-md-6">
                         <label for="booking-country" class="booking-label">Country</label>
@@ -87,7 +100,11 @@
 
                     <div class="col-12">
                         <div id="bookingEstimate" class="booking-summary-box mb-3" style="display:none;"></div>
+                        @if($firstBookingDiscount ?? 0)
+                        <p class="small text-success mb-3"><i class="bi bi-tag-fill me-1"></i> First time booking with us? You get {{ percent($firstBookingDiscount) }} off — applied automatically on the next step.</p>
+                        @endif
                         <div id="availabilityResult" class="mb-3"></div>
+                        @include('partials.stay-policies', ['class' => 'mb-3'])
                     </div>
 
                     <div class="col-12">

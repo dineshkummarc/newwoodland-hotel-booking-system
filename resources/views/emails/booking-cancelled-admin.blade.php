@@ -6,7 +6,7 @@
     <p><strong>Confirmation code:</strong> {{ $booking->confirmation_code }}</p>
     <table cellpadding="6">
         <tr><td><strong>Guest</strong></td><td>{{ $booking->customer_name }} ({{ $booking->email }}, {{ $booking->phone }})</td></tr>
-        <tr><td><strong>Room</strong></td><td>{{ $booking->room->name }}</td></tr>
+        <tr><td><strong>Room</strong></td><td>{{ $booking->roomNames() }}</td></tr>
         <tr><td><strong>Check-in</strong></td><td>{{ $booking->check_in->format('D, d M Y') }}</td></tr>
         <tr><td><strong>Check-out</strong></td><td>{{ $booking->check_out->format('D, d M Y') }}</td></tr>
         <tr><td><strong>Total</strong></td><td>{{ npr($booking->total_price) }}</td></tr>

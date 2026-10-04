@@ -3,14 +3,37 @@
 @section('title', 'Bookings')
 
 @section('content')
+<div class="d-flex justify-content-end mb-3">
+    <a href="{{ route('admin.bookings.create') }}" class="btn-admin-primary"><i class="bi bi-plus-lg"></i> New Booking</a>
+</div>
+
 <div class="table-section mb-4">
     <form method="GET" class="row g-3 align-items-end">
-        <div class="col-md-3">
+        <div class="col-md-2">
             <label class="form-label">Status</label>
             <select name="status" class="form-select">
                 <option value="">All</option>
-                @foreach(['pending', 'confirmed', 'cancelled'] as $status)
-                    <option value="{{ $status }}" {{ request('status') === $status ? 'selected' : '' }}>{{ ucfirst($status) }}</option>
+                @foreach(['pending', 'confirmed', 'checked_in', 'checked_out', 'completed', 'cancelled', 'no_show'] as $status)
+                    <option value="{{ $status }}" {{ request('status') === $status ? 'selected' : '' }}>{{ ucfirst(str_replace('_', ' ', $status)) }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">Payment</label>
+            <select name="payment_status" class="form-select">
+                <option value="">All</option>
+                <option value="none" {{ request('payment_status') === 'none' ? 'selected' : '' }}>No Attempt</option>
+                @foreach(['pending', 'completed', 'failed', 'cancelled'] as $status)
+                    <option value="{{ $status }}" {{ request('payment_status') === $status ? 'selected' : '' }}>{{ ucfirst($status) }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">Room</label>
+            <select name="room_id" class="form-select">
+                <option value="">All</option>
+                @foreach($rooms as $room)
+                    <option value="{{ $room->id }}" {{ request('room_id') == $room->id ? 'selected' : '' }}>{{ $room->label() }}</option>
                 @endforeach
             </select>
         </div>
@@ -22,13 +45,14 @@
             <label class="form-label">To</label>
             <input type="date" name="to" class="form-control" value="{{ request('to') }}">
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <label class="form-label">Search (code, name, email)</label>
             <input type="text" name="search" class="form-control" value="{{ request('search') }}">
         </div>
-        <div class="col-md-2 d-flex gap-2">
+        <div class="col-md-12 d-flex gap-2">
             <button type="submit" class="btn-admin-primary">Filter</button>
-            <a href="{{ route('admin.bookings.export', request()->query()) }}" class="btn btn-outline-dark" title="Export CSV"><i class="bi bi-download"></i></a>
+            <a href="{{ route('admin.bookings.index') }}" class="btn btn-outline-secondary">Reset</a>
+            <a href="{{ route('admin.bookings.export', request()->query()) }}" class="btn btn-outline-dark" title="Export CSV"><i class="bi bi-download"></i> Export CSV</a>
         </div>
     </form>
 </div>
@@ -41,7 +65,7 @@
             @php $payment = $booking->payments->sortByDesc('created_at')->first(); @endphp
             <tr>
                 <td>{{ $booking->confirmation_code }}</td>
-                <td>{{ $booking->room->name ?? '—' }}</td>
+                <td>{{ $booking->roomsSummary() }}</td>
                 <td>{{ $booking->customer_name }}<br><span class="text-muted small">{{ $booking->email }}</span></td>
                 <td>{{ $booking->check_in->format('d M') }} — {{ $booking->check_out->format('d M Y') }}</td>
                 <td>{{ npr($booking->total_price) }}</td>

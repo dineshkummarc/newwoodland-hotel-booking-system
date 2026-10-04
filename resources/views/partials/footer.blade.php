@@ -14,10 +14,10 @@
                         <path d="M 240,190 Q 250,150 240,125 Q 220,135 180,145 Q 210,165 240,190 Z" fill="#d4af37" />
                         <path d="M 260,190 Q 250,150 260,125 Q 280,135 320,145 Q 290,165 260,190 Z" fill="#d4af37" />
                     </svg>
-                    <span class="fs-4 font-heading fw-bold">Newwoodland <span class="text-gold">Hotel and Lounge</span></span>
+                    <span class="fs-4 font-heading fw-bold">Newwoodland <span class="text-gold">Hotel &amp; Lounge</span></span>
                 </a>
                 <p class="footer-text">
-                    Experience luxury, comfort, and authentic Nepalese hospitality at Newwoodland Hotel and Lounge in Bhadrapur-8, Jhapa, Nepal.
+                    Experience luxury, comfort, and authentic Nepalese hospitality at Newwoodland Hotel & Lounge in Bhadrapur-8, Jhapa, Nepal.
                 </p>
                 <div class="footer-social">
                     @if($facebookUrl ?? null)<a href="{{ $facebookUrl }}" target="_blank" rel="noopener" aria-label="Facebook"><i class="bi bi-facebook"></i></a>@endif
@@ -45,7 +45,6 @@
                     <li><a href="{{ route('booking') }}">Online Booking</a></li>
                     <li><a href="{{ route('facilities') }}">Restaurant & Bar</a></li>
                     <li><a href="{{ route('facilities') }}">Swimming Pool</a></li>
-                    <li><a href="{{ route('facilities') }}">Airport Transportation</a></li>
                 </ul>
             </div>
 
@@ -53,8 +52,14 @@
                 <h4>Contact Information</h4>
                 <ul class="footer-contact">
                     <li><i class="bi bi-geo-alt-fill text-gold me-2"></i> {{ $hotelAddress ?? 'Bhadrapur-8, Jhapa, Nepal' }}</li>
-                    <li><i class="bi bi-telephone-fill text-gold me-2"></i> <a href="tel:{{ $hotelPhoneRaw ?? '+9779801415107' }}" class="text-white">{{ $hotelPhone ?? '+977 9801415107' }}</a></li>
-                    <li><i class="bi bi-envelope-fill text-gold me-2"></i> <a href="mailto:{{ $hotelEmail ?? 'info@newwoodlandhotel.com' }}" class="text-white">{{ $hotelEmail ?? 'info@newwoodlandhotel.com' }}</a></li>
+                    <li>
+                        <i class="bi bi-telephone-fill text-gold me-2"></i>
+                        <a href="tel:{{ $hotelPhoneRaw ?? '+9779852690590' }}" class="text-white">{{ $hotelPhone ?? '+977 9852690590' }}</a>
+                        @if($hotelPhoneSecondary ?? null)
+                            &bull; <a href="tel:{{ $hotelPhoneSecondaryRaw }}" class="text-white">{{ $hotelPhoneSecondary }}</a>
+                        @endif
+                    </li>
+                    <li><i class="bi bi-envelope-fill text-gold me-2"></i> <a href="mailto:{{ $hotelEmail ?? 'woodlandhotel146@gmail.com' }}" class="text-white">{{ $hotelEmail ?? 'woodlandhotel146@gmail.com' }}</a></li>
                     @if($checkinTime ?? null)
                     <li><i class="bi bi-clock-fill text-gold me-2"></i> Check-in {{ \Illuminate\Support\Carbon::parse($checkinTime)->format('g:i A') }} &bull; Check-out {{ \Illuminate\Support\Carbon::parse($checkoutTime)->format('g:i A') }}</li>
                     @endif
@@ -65,7 +70,7 @@
         <hr class="border-secondary mt-5">
 
         <div class="footer-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
-            <p>© {{ date('Y') }} <strong>Newwoodland Hotel and Lounge</strong>. All Rights Reserved.</p>
+            <p>© {{ date('Y') }} <strong>Newwoodland Hotel & Lounge</strong>. All Rights Reserved.</p>
             <div class="footer-bottom-links">
                 <a href="{{ route('privacy') }}" class="text-white-50">Privacy Policy</a>
                 <span class="mx-2 text-white-50">|</span>

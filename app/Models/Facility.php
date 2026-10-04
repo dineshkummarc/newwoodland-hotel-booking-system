@@ -42,4 +42,15 @@ class Facility extends Model
     {
         return self::CATEGORIES[$this->category] ?? self::OTHER_CATEGORY_LABEL;
     }
+
+    /**
+     * The description as a list of highlights — one per line, as entered on
+     * the admin form. A single-line description is one highlight.
+     *
+     * @return list<string>
+     */
+    public function highlights(): array
+    {
+        return array_values(array_filter(array_map('trim', preg_split('/\R/', (string) $this->description))));
+    }
 }

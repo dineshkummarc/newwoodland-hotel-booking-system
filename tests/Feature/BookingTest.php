@@ -6,11 +6,12 @@ use App\Models\Booking;
 use App\Models\Room;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
+use Tests\Concerns\ActsAsBookingGuest;
 use Tests\TestCase;
 
 class BookingTest extends TestCase
 {
-    use RefreshDatabase;
+    use ActsAsBookingGuest, RefreshDatabase;
 
     protected function validPayload(Room $room, array $overrides = []): array
     {
@@ -43,7 +44,7 @@ class BookingTest extends TestCase
         $this->assertEquals(3, $booking->nights);
         $this->assertEquals(4500, (float) $booking->total_price);
         $this->assertEquals('pending', $booking->status);
-        Mail::assertNothingSent();
+        Mail::assertNothingOutgoing();
     }
 
     public function test_invalid_booking_fails_validation(): void

@@ -19,8 +19,18 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'phone_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Whether the user has proven ownership of phone_e164 via SMS code —
+     * the only kind of number that can be used for password recovery.
+     */
+    public function hasVerifiedPhone(): bool
+    {
+        return $this->phone_verified_at !== null && $this->phone_e164 !== null;
     }
 
     public function bookings(): HasMany

@@ -10,6 +10,16 @@ if (! function_exists('npr')) {
     }
 }
 
+if (! function_exists('percent')) {
+    /**
+     * Format a percentage without trailing zeros, e.g. 5.00 -> "5%", 7.5 -> "7.5%".
+     */
+    function percent(int|float|string|null $value): string
+    {
+        return rtrim(rtrim(number_format((float) $value, 2), '0'), '.').'%';
+    }
+}
+
 if (! function_exists('payment_provider_label')) {
     /**
      * Human-readable display name for a Payment::provider value, e.g.
@@ -22,6 +32,25 @@ if (! function_exists('payment_provider_label')) {
             return '—';
         }
 
-        return config("payments.methods.{$provider}.label", ucfirst($provider));
+        // Staff-recorded payments taken in person (no checkout method of their own).
+        $inPerson = ['hotel_qr' => 'QR at Hotel (eSewa/Fonepay)'];
+
+        return $inPerson[$provider] ?? config("payments.methods.{$provider}.label", ucfirst($provider));
+    }
+}
+
+if (! function_exists('site_photo_url')) {
+    /**
+     * Public URL of a client-provided photo on the public disk, or null when
+     * the file has not been uploaded yet (the caller then shows a labelled
+     * placeholder instead of a stand-in image).
+     */
+    function site_photo_url(?string $path): ?string
+    {
+        if (blank($path) || ! \Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
+            return null;
+        }
+
+        return \Illuminate\Support\Facades\Storage::disk('public')->url($path);
     }
 }

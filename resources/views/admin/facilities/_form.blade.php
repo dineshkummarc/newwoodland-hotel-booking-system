@@ -19,8 +19,9 @@
         <div class="form-text">Groups this facility on the public Facilities page.</div>
     </div>
     <div class="full-width">
-        <label class="form-label">Description</label>
-        <textarea name="description" class="form-control" rows="3">{{ old('description', $facility->description) }}</textarea>
+        <label class="form-label">Highlights (one per line)</label>
+        <textarea name="description" class="form-control" rows="4" placeholder="Separate pools for adults and children&#10;Landscaped garden">{{ old('description', $facility->description) }}</textarea>
+        <small class="text-muted">Each line is shown to guests as a bullet point. Keep each line short.</small>
     </div>
     <div class="form-check">
         <input type="checkbox" name="show_on_homepage" class="form-check-input" id="show_on_homepage" value="1" {{ old('show_on_homepage', $facility->exists ? $facility->show_on_homepage : true) ? 'checked' : '' }}>

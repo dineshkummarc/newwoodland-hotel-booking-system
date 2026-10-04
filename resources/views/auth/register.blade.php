@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Create Account | Newwoodland Hotel and Lounge')
+@section('title', 'Create Account | Newwoodland Hotel & Lounge')
 @section('meta_robots', 'noindex, follow')
 
 @section('content')
@@ -39,10 +39,11 @@
                             <label for="register-email" class="booking-label">Email Address *</label>
                             <input id="register-email" type="email" name="email" class="form-control" value="{{ old('email') }}" required>
                         </div>
-                        <div class="mb-3">
-                            <label for="register-phone" class="booking-label">Phone Number</label>
-                            <input id="register-phone" type="tel" name="phone" class="form-control" value="{{ old('phone') }}">
-                        </div>
+                        @include('partials.phone-input', [
+                            'id' => 'register-phone',
+                            'label' => 'Phone Number',
+                            'required' => false,
+                        ])
                         <div class="mb-3">
                             <label for="register-password" class="booking-label">Password *</label>
                             <input id="register-password" type="password" name="password" class="form-control" required>

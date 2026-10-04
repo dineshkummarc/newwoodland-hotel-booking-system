@@ -18,7 +18,7 @@
 <body>
     <div class="card">
         <div class="header">
-            <h2 style="margin:0;">Newwoodland Hotel and Lounge</h2>
+            <h2 style="margin:0;">Newwoodland Hotel & Lounge</h2>
             <p style="margin:4px 0 0;">Your booking has been cancelled</p>
             <div class="code">{{ $booking->confirmation_code }}</div>
         </div>
@@ -26,7 +26,7 @@
             <p>Dear {{ $booking->customer_name }},</p>
             <p>This confirms that your reservation below has been cancelled as requested.</p>
             <table>
-                <tr><td class="label">Room</td><td class="value">{{ $booking->room->name }}</td></tr>
+                <tr><td class="label">Room</td><td class="value">{{ $booking->roomNames() }}</td></tr>
                 <tr><td class="label">Check-in</td><td class="value">{{ $booking->check_in->format('D, d M Y') }}</td></tr>
                 <tr><td class="label">Check-out</td><td class="value">{{ $booking->check_out->format('D, d M Y') }}</td></tr>
                 <tr><td class="label">Total</td><td class="value">{{ npr($booking->total_price) }}</td></tr>
@@ -35,9 +35,27 @@
 
             @if($payment && $payment->status === 'completed')
             <div class="note">
-                Our records show a payment of {{ npr($payment->amount) }} was received for this booking
-                (ref {{ $payment->reference_id }}). Our team will contact you shortly regarding your refund —
-                this is not processed automatically.
+                {{-- After-arrival cancellations use the % frozen on the booking (50%); others the Settings deduction. --}}
+                @php $deduction = $booking->appliedCancellationPercent(app(\App\Services\BookingService::class)->cancellationDeductionPercent()); @endphp
+                Our records show {{ npr($booking->amountPaid()) }} was paid for this booking
+                (ref {{ $payment->reference_id }}).
+                @if($deduction)
+                    As per our cancellation policy, {{ $deduction }}% of the booking amount ({{ npr($booking->cancellationCharge($deduction)) }}) is deducted, so the refund due is {{ npr($booking->refundDue($deduction)) }}.
+                @else
+                    Cancellation before arrival is free, so the refund due is {{ npr($booking->refundDue(0)) }}.
+                @endif
+                @if($booking->chargesTotal() > 0)
+                    Extra charges from your stay ({{ npr($booking->chargesTotal()) }}) are also payable.
+                @endif
+                Our team will contact you shortly regarding your refund — this is not processed automatically.
+            </div>
+            @endif
+
+            @if($booking->wasCancelledAfterArrival() && $booking->outstandingBalance() > 0)
+            <div class="note">
+                As your stay was cancelled after arrival, a {{ $booking->cancellation_charge_percent }}% cancellation charge
+                ({{ npr($booking->cancellationCharge(0)) }})@if($booking->chargesTotal() > 0) plus extra charges ({{ npr($booking->chargesTotal()) }})@endif applies.
+                Amount payable: <strong>{{ npr($booking->outstandingBalance()) }}</strong>.
             </div>
             @endif
 

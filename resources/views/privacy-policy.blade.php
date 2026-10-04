@@ -1,10 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'Privacy Policy | Newwoodland Hotel and Lounge')
-@section('meta_description', 'Learn how Newwoodland Hotel and Lounge collects, uses, shares, and protects your personal information.')
+@section('title', 'Privacy Policy | Newwoodland Hotel & Lounge')
+@section('meta_description', 'Learn how Newwoodland Hotel & Lounge collects, uses, shares, and protects your personal information.')
 @section('canonical', route('privacy'))
 @section('meta_robots', 'noindex, follow')
 
+{{-- Keep this page accurate to what the website actually does. If a new
+     service is added (analytics, marketing emails, a new payment provider),
+     update the relevant section and the "Last updated" date. --}}
 @section('content')
 <section class="page-banner text-center">
     <div class="container">
@@ -12,90 +15,61 @@
             <span class="section-subtitle text-warning">Privacy Policy</span>
             <h1 class="font-heading">Your Privacy Matters</h1>
             <p class="lead text-white-50 max-w-700 mx-auto mt-3">
-                Learn how Newwoodland Hotel and Lounge collects, uses, and protects your personal information.
+                How Newwoodland Hotel & Lounge collects, uses, and protects your personal information.
             </p>
-            <p class="text-white-50 small mb-0">Last updated: {{ now()->format('F j, Y') }}</p>
         </div>
     </div>
 </section>
 
 <section class="privacy-section py-5 bg-white">
     <div class="container">
-        <div class="privacy-card p-4 bg-light rounded-4 shadow-sm border mb-4">
-            <p class="text-muted mb-0">
-                At <strong>Newwoodland Hotel and Lounge</strong>, we respect your privacy and are committed to protecting the
-                personal information you provide through our website.
-            </p>
-        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-9 col-xl-8">
+                <div class="terms-card terms-document p-4 p-md-5 bg-light rounded-4 shadow-sm border">
+                    <p class="text-muted small mb-4"><strong>Last updated:</strong> September 30, 2026</p>
 
-        <div class="privacy-card p-4 bg-light rounded-4 shadow-sm border mb-4">
-            <h2 class="font-heading text-emerald h4 mb-3">1. Information We Collect</h2>
-            <p class="text-muted mb-2">
-                When you make a booking, submit an inquiry, or contact us, we may collect your name, email address,
-                phone number, country, booking details, special requests, and message content.
-            </p>
-            <p class="text-muted mb-0">
-                We do not collect or store payment card information directly through this website.
-            </p>
-        </div>
+                    <h2 class="font-heading text-emerald h5">1. Information We Collect</h2>
+                    <ul class="terms-list">
+                        <li>Name, email address, phone number, and booking details provided at the time of reservation.</li>
+                        <li>Payment records, including method, amount, and transaction reference.</li>
+                        <li>If you verify a phone number in your account, that number and a record of its verification. One-time verification codes are sent by SMS; they are stored only in a non-reversible (hashed) form and expire after a few minutes.</li>
+                        <li>At check-in, staff may record the type and number of the photo ID you present (Citizenship, Student ID or Office/Company ID). The ID number is stored encrypted and is visible only to authorised hotel staff. Copies or scans of ID documents are not kept.</li>
+                        <li>Card numbers, wallet PINs, and banking passwords are never collected or stored.</li>
+                    </ul>
 
-        <div class="privacy-card p-4 bg-light rounded-4 shadow-sm border mb-4">
-            <h2 class="font-heading text-emerald h4 mb-3">2. How We Use Your Information</h2>
-            <p class="text-muted mb-2">
-                We use your information to process and manage bookings, respond to inquiries, communicate with you
-                regarding your stay, and provide our services.
-            </p>
-            <p class="text-muted mb-0">
-                We do not sell or rent your personal information or use it for marketing without your consent
-                where required by law.
-            </p>
-        </div>
+                    <h2 class="font-heading text-emerald h5">2. Use of Information</h2>
+                    <ul class="terms-list">
+                        <li>To process reservations and payments, and to communicate regarding your stay.</li>
+                        <li>A verified phone number is used to send verification and password-recovery codes by SMS.</li>
+                        <li>To respond to enquiries and to meet legal and record-keeping obligations.</li>
+                    </ul>
 
-        <div class="privacy-card p-4 bg-light rounded-4 shadow-sm border mb-4">
-            <h2 class="font-heading text-emerald h4 mb-3">3. Sharing of Information</h2>
-            <p class="text-muted mb-2">
-                We may share necessary information with trusted service providers who help us operate our website
-                and provide services, such as booking and email communication.
-            </p>
-            <p class="text-muted mb-0">
-                We do not sell your information to advertisers.
-            </p>
-        </div>
+                    <h2 class="font-heading text-emerald h5">3. Sharing of Information</h2>
+                    <ul class="terms-list">
+                        <li>Information is shared only with service providers necessary to operate our services, such as payment, email, and SMS providers, or where required by law.</li>
+                        <li>Personal information is never sold or rented.</li>
+                    </ul>
 
-        <div class="privacy-card p-4 bg-light rounded-4 shadow-sm border mb-4">
-            <h2 class="font-heading text-emerald h4 mb-3">4. Data Security & Retention</h2>
-            <p class="text-muted mb-0">
-                We take reasonable measures to protect your personal information and retain it only for as long as
-                necessary to provide our services, maintain business records, or meet legal obligations.
-            </p>
-        </div>
+                    <h2 class="font-heading text-emerald h5">4. Cookies</h2>
+                    <ul class="terms-list">
+                        <li>Only essential cookies are used, to maintain sessions and secure forms. No advertising or tracking cookies are used.</li>
+                    </ul>
 
-        <div class="privacy-card p-4 bg-light rounded-4 shadow-sm border mb-4">
-            <h2 class="font-heading text-emerald h4 mb-3">5. Your Rights</h2>
-            <p class="text-muted mb-0">
-                Where applicable, you may request access to, correction of, or deletion of your personal
-                information by contacting us.
-            </p>
-        </div>
+                    <h2 class="font-heading text-emerald h5">5. Security &amp; Your Rights</h2>
+                    <ul class="terms-list">
+                        <li>Reasonable measures are taken to protect personal information, which is retained only as long as necessary.</li>
+                        <li>You may request access to, correction of, or deletion of your information, subject to legal requirements.</li>
+                    </ul>
 
-        <div class="privacy-card p-4 bg-light rounded-4 shadow-sm border mb-4">
-            <h2 class="font-heading text-emerald h4 mb-3">6. Contact Us</h2>
-            <p class="text-muted mb-1">For questions or privacy-related requests, please contact:</p>
-            <p class="text-muted mb-0">
-                <strong class="d-block text-emerald">Newwoodland Hotel and Lounge</strong>
-                Email: <a href="mailto:{{ $hotelEmail ?? 'info@newwoodlandhotel.com' }}" class="text-emerald">{{ $hotelEmail ?? 'info@newwoodlandhotel.com' }}</a><br>
-                @if($hotelPhone ?? null)
-                Phone: <a href="tel:{{ $hotelPhoneRaw ?? '' }}" class="text-emerald">{{ $hotelPhone }}</a>
-                @endif
-            </p>
-        </div>
-
-        <div class="privacy-card p-4 bg-light rounded-4 shadow-sm border mb-0">
-            <h2 class="font-heading text-emerald h4 mb-3">7. Policy Updates</h2>
-            <p class="text-muted mb-0">
-                We may update this Privacy Policy from time to time. Any changes will be posted on this page with
-                an updated "Last Updated" date.
-            </p>
+                    <h2 class="font-heading text-emerald h5">6. Contact</h2>
+                    <ul class="terms-list mb-0">
+                        <li>Email: <a href="mailto:{{ $hotelEmail ?? 'woodlandhotel146@gmail.com' }}" class="text-emerald">{{ $hotelEmail ?? 'woodlandhotel146@gmail.com' }}</a></li>
+                        @if($hotelPhone ?? null)
+                            <li>Phone: <a href="tel:{{ $hotelPhoneRaw ?? '' }}" class="text-emerald">{{ $hotelPhone }}</a></li>
+                        @endif
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 </section>

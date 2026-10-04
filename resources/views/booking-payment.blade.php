@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Complete Payment | Newwoodland Hotel and Lounge')
+@section('title', 'Complete Payment | Newwoodland Hotel & Lounge')
 @section('meta_robots', 'noindex, nofollow')
 
 @section('content')
@@ -10,7 +10,7 @@
             <span class="section-subtitle text-warning">One Step Left</span>
             <h1 class="font-heading">Complete Your Payment</h1>
             <p class="lead text-white-50 max-w-700 mx-auto mt-3">
-                Your room is held for {{ $booking->customer_name }} — complete payment below to confirm your reservation at Newwoodland Hotel and Lounge.
+                Your room is held for {{ $booking->customer_name }} — choose how you would like to pay to complete your reservation at Newwoodland Hotel & Lounge.
             </p>
         </div>
     </div>
@@ -34,82 +34,171 @@
                     </div>
 
                     <table class="table">
-                        <tr><td class="text-muted">Room</td><td class="text-end fw-semibold">{{ $booking->room->name }}</td></tr>
-                        <tr><td class="text-muted">Check-in</td><td class="text-end fw-semibold">{{ $booking->check_in->format('D, d M Y') }}</td></tr>
-                        <tr><td class="text-muted">Check-out</td><td class="text-end fw-semibold">{{ $booking->check_out->format('D, d M Y') }}</td></tr>
+                        <tr><td class="text-muted">Room</td><td class="text-end fw-semibold">{{ $booking->roomNames() }}</td></tr>
+                        <tr><td class="text-muted">Check-in</td><td class="text-end fw-semibold">{{ $booking->checkInLabel() }}</td></tr>
+                        <tr><td class="text-muted">Check-out</td><td class="text-end fw-semibold">{{ $booking->checkOutLabel() }}</td></tr>
                         <tr><td class="text-muted">Nights</td><td class="text-end fw-semibold">{{ $booking->nights }}</td></tr>
                         <tr><td class="text-muted">Guests</td><td class="text-end fw-semibold">{{ $booking->guests_label }}</td></tr>
                         <tr><td class="text-muted">Nightly Rate</td><td class="text-end fw-semibold">{{ npr($booking->nightly_rate) }}</td></tr>
+                        @if($booking->hasDiscount())
+                        <tr><td class="text-muted">Subtotal</td><td class="text-end fw-semibold">{{ npr($booking->subtotal()) }}</td></tr>
+                        <tr><td class="text-success">First-booking discount ({{ percent($booking->discount_percent) }})</td><td class="text-end fw-semibold text-success">− {{ npr($booking->discount_amount) }}</td></tr>
+                        @endif
                         <tr><td class="text-muted fs-5">Total Amount</td><td class="text-end fw-bold fs-5 text-emerald">{{ npr($booking->total_price) }}</td></tr>
                     </table>
 
-                    <div class="mt-4">
-                        <span class="section-subtitle d-block mb-3">Choose a Payment Method</span>
+                    @php
+                        // $paymentMethods only contains methods the hotel accepts right now.
+                        $selectedMethod = old('payment_method', array_key_first($paymentMethods));
+                        $methodColumns = 'col-12 col-sm-6'.(count($paymentMethods) > 2 ? ' col-md-4' : '');
+                    @endphp
+
+                    <form id="payment-method-form" action="{{ route('booking.pay.continue', $booking->confirmation_code) }}" method="POST" class="mt-4" novalidate>
+                        @csrf
+                        <fieldset>
+                        <legend class="section-subtitle d-block mb-3 fs-6">Choose a Payment Method</legend>
+
+                        @error('payment_method')
+                            <div class="alert alert-danger py-2">{{ $message }}</div>
+                        @enderror
 
                         <div class="row g-3">
                             @foreach($paymentMethods as $key => $method)
-                            <div class="col-6 col-md-3">
-                                @if($method['enabled'])
-                                    <form action="{{ $method['initiate_route'] }}" method="POST" class="h-100 m-0">
-                                        @csrf
-                                        <button type="submit" class="payment-method-card payment-method-card--active w-100 h-100">
-                                            <i class="bi {{ $method['icon'] }} fs-2"></i>
-                                            <span class="payment-method-card__label">{{ $method['label'] }}</span>
-                                            <span class="payment-method-card__status text-success"><i class="bi bi-check-circle-fill"></i> Available</span>
-                                        </button>
-                                    </form>
-                                @else
-                                    <button type="button"
-                                        class="payment-method-card payment-method-card--disabled w-100 h-100"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#payment-unavailable-modal"
-                                        data-method-label="{{ $method['label'] }}"
-                                        data-method-message="{{ $method['description'] }}">
-                                        <i class="bi {{ $method['icon'] }} fs-2"></i>
-                                        <span class="payment-method-card__label">{{ $method['label'] }}</span>
-                                        <span class="payment-method-card__status text-muted"><i class="bi bi-clock-history"></i> Coming Soon</span>
-                                    </button>
-                                @endif
+                            <div class="{{ $methodColumns }}">
+                                <label class="payment-method-card payment-method-card--active payment-method-option w-100 h-100 mb-0">
+                                    <input type="radio" name="payment_method" value="{{ $key }}"
+                                           class="payment-method-option__input"
+                                           data-method-label="{{ $method['label'] }}"
+                                           data-method-description="{{ $method['description'] }}"
+                                           @checked($selectedMethod === $key)>
+                                    <i class="bi {{ $method['icon'] }} fs-2"></i>
+                                    <span class="payment-method-card__label">{{ $method['label'] }}</span>
+                                    @if($key === 'bank_transfer' && $bankName)
+                                        <span class="payment-method-card__status text-muted">{{ $bankName }}</span>
+                                    @elseif($key === 'cash')
+                                        <span class="payment-method-card__status text-muted">Pay at Hotel</span>
+                                    @else
+                                        <span class="payment-method-card__status text-success"><i class="bi bi-check-circle-fill"></i> Available</span>
+                                    @endif
+                                </label>
                             </div>
                             @endforeach
                         </div>
+                        </fieldset>
 
-                        <p class="text-muted small text-center mt-3 mb-0">
-                            You will be redirected to your chosen provider's secure payment page. Your booking is confirmed automatically once payment is verified.
-                        </p>
-                    </div>
+                        @if($paymentMethods)
+                            <p id="payment-method-description" class="text-muted small text-center mt-3 mb-0">
+                                {{ $paymentMethods[$selectedMethod]['description'] ?? '' }}
+                            </p>
+
+                            @if($split)
+                            <fieldset id="payment-plan" class="mt-4" data-split-methods="{{ implode(',', $split['methods']) }}">
+                                <legend class="section-subtitle d-block mb-3 fs-6">How Much to Pay Now</legend>
+                                <div class="row g-3">
+                                    <div class="col-12 col-sm-6">
+                                        <label class="payment-method-card payment-method-card--active payment-method-option w-100 h-100 mb-0">
+                                            <input type="radio" name="payment_plan" value="full" class="payment-method-option__input" @checked(old('payment_plan', 'full') === 'full')>
+                                            <span class="payment-method-card__label">Pay 100% Now</span>
+                                            <span class="payment-method-card__status text-muted">{{ npr($booking->total_price) }} now</span>
+                                        </label>
+                                    </div>
+                                    <div class="col-12 col-sm-6">
+                                        <label class="payment-method-card payment-method-card--active payment-method-option w-100 h-100 mb-0">
+                                            <input type="radio" name="payment_plan" value="split" class="payment-method-option__input" @checked(old('payment_plan') === 'split')>
+                                            <span class="payment-method-card__label">Pay {{ $split['percent'] }}% Now + {{ 100 - $split['percent'] }}% at Hotel</span>
+                                            <span class="payment-method-card__status text-muted">{{ npr($split['now']) }} now, {{ npr($split['later']) }} — Pay at Hotel</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            @endif
+                            <button type="submit" id="payment-continue" class="btn-gold w-100 justify-content-center py-3 mt-4">
+                                <i class="bi bi-shield-lock"></i>
+                                <span id="payment-continue-text">Continue Payment — {{ npr($booking->total_price) }}</span>
+                            </button>
+                        @else
+                            <div class="alert alert-warning mt-4 mb-0">No payment method is available right now. Please contact the hotel to complete your booking.</div>
+                        @endif
+                    </form>
+
+                    {{-- Guests from outside Nepal often have no eSewa/Fonepay or Nepali bank app. --}}
+                    <p class="small text-muted mt-4 mb-0">
+                        <i class="bi bi-globe2 me-1"></i>
+                        Visiting from outside Nepal, or can't use these payment methods? Please contact the hotel
+                        @if($hotelPhone ?? null) on <a href="tel:{{ $hotelPhoneRaw }}">{{ $hotelPhone }}</a>@endif
+                        @if(($hotelPhone ?? null) && ($hotelEmail ?? null)) or @endif
+                        @if($hotelEmail ?? null) at <a href="mailto:{{ $hotelEmail }}">{{ $hotelEmail }}</a>@endif
+                        with your booking reference <strong>{{ $booking->confirmation_code }}</strong> and we will help you arrange payment.
+                    </p>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<div class="modal fade" id="payment-unavailable-modal" tabindex="-1" aria-labelledby="payment-unavailable-title" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="payment-unavailable-title">Payment Method Unavailable</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p id="payment-unavailable-message" class="mb-0"></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Back to Payment Options</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 @push('scripts')
 <script>
-    document.getElementById('payment-unavailable-modal')?.addEventListener('show.bs.modal', function (event) {
-        var trigger = event.relatedTarget;
-        var title = document.getElementById('payment-unavailable-title');
-        var message = document.getElementById('payment-unavailable-message');
-        title.textContent = (trigger.getAttribute('data-method-label') || 'Payment Method') + ' — Currently Unavailable';
-        message.textContent = trigger.getAttribute('data-method-message') || 'This payment method is not available yet.';
-    });
+    // Explain what the selected method means,
+    // and offer "pay part now" only for methods that support it.
+    (function () {
+        var plan = document.getElementById('payment-plan');
+        var splitMethods = plan ? plan.getAttribute('data-split-methods').split(',') : [];
+
+        function sync(input) {
+            var description = document.getElementById('payment-method-description');
+            if (description) { description.textContent = input.getAttribute('data-method-description') || ''; }
+            if (plan) {
+                var supported = splitMethods.indexOf(input.value) !== -1;
+                plan.hidden = !supported;
+                if (!supported) { plan.querySelector('input[value="full"]').checked = true; }
+            }
+        }
+
+        document.querySelectorAll('input[name="payment_method"]').forEach(function (input) {
+            input.addEventListener('change', function () { sync(input); });
+            if (input.checked) { sync(input); }
+        });
+    })();
+
+    // Processing state: once "Continue Payment" is pressed, lock the form so
+    // a double-click can't start two payments, and show that it's processing.
+    (function () {
+        var form = document.getElementById('payment-method-form');
+        var button = document.getElementById('payment-continue');
+        var text = document.getElementById('payment-continue-text');
+        if (!form || !button || !text) { return; }
+        var originalText = text.textContent;
+
+        form.addEventListener('submit', function (event) {
+            var chosen = form.querySelector('input[name="payment_method"]:checked');
+            if (!chosen || form.dataset.submitting) {
+                if (!chosen) { event.preventDefault(); }
+                if (form.dataset.submitting) { event.preventDefault(); }
+                return;
+            }
+            form.dataset.submitting = '1';
+            text.textContent = 'Processing…';
+            button.insertAdjacentHTML('afterbegin', '<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>');
+            // Disable after the submit event has been dispatched, so the POST still goes out.
+            setTimeout(function () {
+                button.disabled = true;
+                form.querySelectorAll('input[name="payment_method"]').forEach(function (input) { input.disabled = true; });
+            }, 0);
+        });
+
+        // If the guest hits Back after being redirected to a gateway, some
+        // browsers restore this page from cache (bfcache) still locked on
+        // "Redirecting…" — reset it so the page is usable without a refresh.
+        window.addEventListener('pageshow', function (event) {
+            if (!event.persisted) { return; }
+            delete form.dataset.submitting;
+            button.disabled = false;
+            text.textContent = originalText;
+            var spinner = button.querySelector('.spinner-border');
+            if (spinner) { spinner.remove(); }
+            form.querySelectorAll('input[name="payment_method"]').forEach(function (input) { input.disabled = false; });
+        });
+    })();
 </script>
 @endpush
 @endsection

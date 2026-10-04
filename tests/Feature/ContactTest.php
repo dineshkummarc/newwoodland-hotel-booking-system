@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Mail\NewContactMessageMail;
 use App\Models\Setting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
@@ -31,6 +32,8 @@ class ContactTest extends TestCase
             'email' => 'john@example.com',
             'is_read' => false,
         ]);
+        // Queued, so a slow mail server never delays the visitor's response.
+        Mail::assertQueued(NewContactMessageMail::class, fn ($mail) => $mail->hasTo(Setting::first()->site_email));
     }
 
     public function test_invalid_contact_data_is_rejected(): void

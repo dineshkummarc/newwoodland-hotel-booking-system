@@ -18,9 +18,17 @@ return [
 
     'mode' => env('ESEWA_MODE', 'sandbox'),
 
-    'product_code' => env('ESEWA_PRODUCT_CODE', 'EPAYTEST'),
+    // ESEWA_MERCHANT_CODE is the current/preferred name for this value.
+    // ESEWA_PRODUCT_CODE is kept as a fallback so an existing .env from
+    // before this rename keeps working without any manual edit.
+    'product_code' => env('ESEWA_MERCHANT_CODE', env('ESEWA_PRODUCT_CODE', 'EPAYTEST')),
 
     'secret_key' => env('ESEWA_SECRET_KEY', '8gBm/:&EnhH.1/q'),
+
+    // An attempt eSewa still reports as NOT_FOUND after this many minutes
+    // is closed as failed by reconciliation (the guest can no longer be on
+    // eSewa's checkout page). Until then it stays pending and is re-checked.
+    'abandon_after_minutes' => 180,
 
     'urls' => [
         'sandbox' => [

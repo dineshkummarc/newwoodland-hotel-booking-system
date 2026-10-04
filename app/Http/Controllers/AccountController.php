@@ -12,7 +12,7 @@ class AccountController extends Controller
 {
     public function bookings(BookingService $bookingService)
     {
-        $bookings = Auth::user()->bookings()->with(['room', 'payments'])->latest()->paginate(10);
+        $bookings = Auth::user()->bookings()->with(['room', 'additionalRooms.room', 'payments'])->latest()->paginate(10);
         $cancellationWindowHours = $bookingService->cancellationWindowHours();
 
         return view('account.bookings', compact('bookings', 'cancellationWindowHours'));

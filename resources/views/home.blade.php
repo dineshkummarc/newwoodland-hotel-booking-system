@@ -1,19 +1,30 @@
 @extends('layouts.app')
 
-@section('title', 'Newwoodland Hotel and Lounge | Hotel in Bhadrapur-8, Jhapa')
-@section('meta_description', 'Newwoodland Hotel and Lounge offers luxury accommodation, premium dining, modern facilities, and exceptional hospitality in Bhadrapur-8, Jhapa, Nepal.')
+@section('title', 'Newwoodland Hotel & Lounge | Hotel in Bhadrapur-8, Jhapa')
+@section('meta_description', 'Newwoodland Hotel & Lounge offers luxury accommodation, premium dining, modern facilities, and exceptional hospitality in Bhadrapur-8, Jhapa, Nepal.')
 @section('canonical', route('home'))
+@php
+    // Client photo slots (config/photos.php): real photo when uploaded,
+    // otherwise a labelled placeholder.
+    $heroPhoto = config('photos.home_hero');
+    $heroPhotoUrl = site_photo_url($heroPhoto['path']);
+    $introPhoto = config('photos.home_intro');
+    $introPhotoUrl = site_photo_url($introPhoto['path']);
+@endphp
+@if($heroPhotoUrl)
+    @section('og_image', $heroPhotoUrl)
+@endif
 
 @push('structured_data')
 <script type="application/ld+json">
 {
     "@@context": "https://schema.org",
     "@@type": "Hotel",
-    "name": "Newwoodland Hotel and Lounge",
-    "image": "{{ asset('storage/site/hero-1.jpg') }}",
+    "name": "Newwoodland Hotel & Lounge",
+    @if($heroPhotoUrl)"image": "{{ $heroPhotoUrl }}",@endif
     "url": "{{ route('home') }}",
-    "telephone": "{{ $hotelPhone ?? '+977 9801415107' }}",
-    "email": "{{ $hotelEmail ?? 'info@newwoodlandhotel.com' }}",
+    "telephone": "{{ $hotelPhone ?? '+977 9852690590' }}",
+    "email": "{{ $hotelEmail ?? 'woodlandhotel146@gmail.com' }}",
     "address": {
         "@@type": "PostalAddress",
         "streetAddress": "{{ $hotelAddress ?? 'Bhadrapur-8, Jhapa, Nepal' }}",
@@ -31,13 +42,17 @@
 @endpush
 
 @section('content')
-<section id="hero" class="page-banner text-center" style="background-image:url('{{ asset('storage/site/hero-1.jpg') }}'); background-size:cover; background-position:center;">
+<section id="hero" class="page-banner text-center{{ $heroPhotoUrl ? ' page-banner--photo' : '' }}" @if($heroPhotoUrl) style="background-image:url('{{ $heroPhotoUrl }}'); background-size:cover; background-position:center;" @endif>
+    @unless($heroPhotoUrl)
+        {{-- CLIENT INPUT REQUIRED: storage/app/public/{{ $heroPhoto['path'] }} --}}
+        <span class="hero-photo-note"><i class="bi bi-camera" aria-hidden="true"></i> {{ $heroPhoto['label'] }} — Client Photo Required</span>
+    @endunless
     <div class="container">
         <div class="hero-content">
-            <span class="section-subtitle text-warning">Welcome to Newwoodland Hotel and Lounge</span>
+            <span class="section-subtitle text-warning">Welcome to Newwoodland Hotel & Lounge</span>
             <h1 class="font-heading">Experience Timeless Comfort</h1>
             <p class="lead text-white-50 max-w-700 mx-auto mt-3">
-                Newwoodland Hotel and Lounge offers luxury accommodation, premium dining, modern facilities, and exceptional hospitality in Bhadrapur-8, Jhapa, Nepal.
+                Newwoodland Hotel & Lounge offers luxury accommodation, premium dining, modern facilities, and exceptional hospitality in Bhadrapur-8, Jhapa, Nepal.
             </p>
             <div class="hero-buttons d-flex justify-content-center gap-3 mt-4">
                 <a href="{{ route('booking') }}" class="btn-gold py-3 px-5 fs-6">Book Your Stay</a>
@@ -47,17 +62,50 @@
     </div>
 </section>
 
+@if($firstBookingDiscount || $guestSatisfaction)
+<section id="home-highlights" class="home-highlights py-4">
+    <div class="container">
+        <div class="row g-3 align-items-center justify-content-center text-center text-md-start">
+            @if($firstBookingDiscount)
+            <div class="col-md-8 d-flex align-items-center justify-content-center justify-content-md-start gap-3">
+                <span class="home-highlights__badge">{{ percent($firstBookingDiscount) }} OFF</span>
+                <div>
+                    <strong class="d-block font-heading fs-5">Your first booking is {{ percent($firstBookingDiscount) }} off</strong>
+                    <span class="small">Book directly on our website — the discount is applied automatically.</span>
+                </div>
+            </div>
+            @endif
+            @if($guestSatisfaction)
+            <div class="col-md-4 d-flex align-items-center justify-content-center justify-content-md-end gap-2">
+                <i class="bi bi-people-fill fs-2 text-gold"></i>
+                <div>
+                    <strong class="d-block font-heading fs-4">{{ $guestSatisfaction }}</strong>
+                    <span class="small">guests served to date</span>
+                </div>
+            </div>
+            @endif
+        </div>
+    </div>
+</section>
+@endif
+
 <section id="about-preview" class="py-5 bg-white">
     <div class="container">
         <div class="row align-items-center g-5">
             <div class="col-lg-6">
-                <img src="{{ asset('storage/site/about.jpg') }}" alt="Newwoodland Hotel and Lounge" class="img-fluid rounded-4 shadow-lg">
+                @if($introPhotoUrl)
+                    <img src="{{ $introPhotoUrl }}" alt="{{ $introPhoto['alt'] }}" class="img-fluid rounded-4 shadow-lg" loading="lazy" decoding="async">
+                @else
+                    <div class="photo-frame photo-frame--intro rounded-4 shadow-lg">
+                        @include('partials.photo-placeholder', ['label' => $introPhoto['label'], 'icon' => 'bi-buildings'])
+                    </div>
+                @endif
             </div>
             <div class="col-lg-6">
-                <span class="section-subtitle">About Newwoodland Hotel and Lounge</span>
+                <span class="section-subtitle">About Newwoodland Hotel & Lounge</span>
                 <h2 class="section-title">Comfort & Authentic Nepalese Hospitality</h2>
                 <p class="text-muted leading-relaxed">
-                    Located in Bhadrapur-8, Jhapa, Nepal, Newwoodland Hotel and Lounge provides comfortable and luxurious accommodation for business travelers, families, and leisure guests alike.
+                    Located in Bhadrapur-8, Jhapa, Nepal, Newwoodland Hotel & Lounge provides comfortable and luxurious accommodation for business travelers, families, and leisure guests alike.
                 </p>
                 <a href="{{ route('about') }}" class="btn-gold">Learn More About Us</a>
             </div>
@@ -69,37 +117,13 @@
     <div class="container">
         <div class="section-heading text-center mb-5">
             <span class="section-subtitle">Featured Rooms</span>
-            <h2 class="section-title">Luxury Rooms & Suites</h2>
+            <h2 class="section-title">Our Rooms</h2>
             <p class="text-muted">Enjoy beautifully appointed rooms, modern amenities, and authentic Nepalese hospitality during your stay.</p>
         </div>
         <div class="row g-4">
             @forelse($featuredRooms as $room)
             <div class="col-lg-4 col-md-6">
-                <article class="room-card p-4 bg-white rounded-4 border shadow-sm h-100 d-flex flex-column justify-content-between">
-                    <div>
-                        <div class="position-relative overflow-hidden rounded-3 mb-3">
-                            @if($room->badge_label)<span class="room-tag">{{ $room->badge_label }}</span>@endif
-                            <img src="{{ $room->primaryImage() ? asset('storage/'.$room->primaryImage()->path) : 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=800&q=80' }}" alt="{{ $room->name }}" class="img-fluid w-100" style="height: 240px; object-fit: cover;">
-                        </div>
-                        <h3 class="font-heading text-emerald h4">{{ $room->name }}</h3>
-                        <p class="text-muted small mb-3">{{ $room->short_description ?? Str::limit($room->description, 120) }}</p>
-                        <ul class="list-unstyled text-muted small mb-4 lh-lg">
-                            <li><i class="bi bi-people-fill me-1"></i> {{ $room->max_guests }} Guests</li>
-                            <li><i class="bi bi-lamp-fill me-1"></i> {{ $room->bed_type ?? 'King Bed' }}</li>
-                            @if($room->size_sqm)<li><i class="bi bi-aspect-ratio me-1"></i> {{ $room->size_sqm }} m²</li>@endif
-                        </ul>
-                    </div>
-                    <div class="border-top pt-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
-                        <div>
-                            <span class="fs-4 font-heading fw-bold text-emerald">{{ npr($room->price_per_night) }}</span>
-                            <small class="text-muted">/ Night</small>
-                        </div>
-                        <div class="d-flex gap-2">
-                            <a href="{{ route('rooms.show', $room->slug) }}" class="btn btn-outline-dark py-2 fs-6">Details</a>
-                            <a href="{{ route('booking', ['room' => $room->id]) }}" class="btn-gold py-2 fs-6">Book</a>
-                        </div>
-                    </div>
-                </article>
+                @include('partials.room-card', ['room' => $room])
             </div>
             @empty
             <div class="col-12">
@@ -120,11 +144,7 @@
         <div class="row g-4">
             @foreach($facilities as $facility)
             <div class="col-lg-4 col-md-6">
-                <div class="facility-card p-4 bg-light rounded-4 shadow-sm h-100">
-                    <div class="facility-icon mb-3"><i class="bi {{ $facility->icon ?: 'bi-check-circle-fill' }}"></i></div>
-                    <h4 class="mb-3">{{ $facility->title }}</h4>
-                    <p class="text-muted">{{ $facility->description }}</p>
-                </div>
+                @include('partials.facility-card', ['facility' => $facility])
             </div>
             @endforeach
         </div>
@@ -139,13 +159,13 @@
     <div class="container">
         <div class="section-heading text-center mb-5">
             <span class="section-subtitle">Photo Gallery</span>
-            <h2 class="section-title">A Glimpse of Newwoodland Hotel and Lounge</h2>
+            <h2 class="section-title">A Glimpse of Newwoodland Hotel & Lounge</h2>
         </div>
         <div class="row g-4">
             @foreach($galleryPreview as $image)
             <div class="col-lg-2 col-md-4 col-6">
                 <div class="gallery-card overflow-hidden rounded-4 shadow-sm">
-                    <img src="{{ asset('storage/'.$image->path) }}" alt="{{ $image->title }}" class="img-fluid w-100" style="height: 160px; object-fit: cover;">
+                    <img src="{{ asset('storage/'.$image->path) }}" alt="{{ $image->altText() }}" class="img-fluid w-100" style="height: 160px; object-fit: cover;" loading="lazy" decoding="async">
                 </div>
             </div>
             @endforeach
@@ -162,7 +182,7 @@
         <div class="section-heading text-center mb-5">
             <span class="section-subtitle">Guest Reviews</span>
             <h2 class="section-title">What Guests Are Saying</h2>
-            <p class="text-muted">Real guest feedback from beautiful stays at Newwoodland Hotel and Lounge.</p>
+            <p class="text-muted">Real guest feedback from beautiful stays at Newwoodland Hotel & Lounge.</p>
         </div>
         <div class="row g-4">
             @forelse($testimonials as $testimonial)

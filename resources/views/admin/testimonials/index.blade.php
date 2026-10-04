@@ -14,7 +14,11 @@
             @forelse($testimonials as $testimonial)
             <tr>
                 <td>
-                    <img src="{{ $testimonial->avatar_path ? (str_starts_with($testimonial->avatar_path, 'http') ? $testimonial->avatar_path : asset('storage/'.$testimonial->avatar_path)) : 'https://ui-avatars.com/api/?name='.urlencode($testimonial->name) }}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;" alt="{{ $testimonial->name }}">
+                    @if($testimonial->avatar_path && ! str_starts_with($testimonial->avatar_path, 'http'))
+                        <img src="{{ asset('storage/'.$testimonial->avatar_path) }}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;" alt="Photo of {{ $testimonial->name }}">
+                    @else
+                        <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-light border text-muted small fw-semibold align-middle" style="width:36px;height:36px;" aria-hidden="true">{{ mb_strtoupper(mb_substr($testimonial->name, 0, 1)) }}</span>
+                    @endif
                     {{ $testimonial->name }}<br><span class="text-muted small">{{ $testimonial->location }}</span>
                 </td>
                 <td>{{ str_repeat('★', $testimonial->rating) }}</td>

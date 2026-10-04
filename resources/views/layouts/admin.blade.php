@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
-    <title>@yield('title', 'Admin') | Newwoodland Hotel and Lounge</title>
+    <title>@yield('title', 'Admin') | Newwoodland Hotel & Lounge</title>
 
     <link rel="icon" type="image/svg+xml" href="{{ asset('assets/images/logo/logo.svg') }}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
@@ -24,6 +24,11 @@
                 <li><a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a></li>
                 <li><a href="{{ route('admin.rooms.index') }}" class="{{ request()->routeIs('admin.rooms.*') ? 'active' : '' }}"><i class="bi bi-door-open-fill"></i> Rooms</a></li>
                 <li><a href="{{ route('admin.bookings.index') }}" class="{{ request()->routeIs('admin.bookings.*') ? 'active' : '' }}"><i class="bi bi-calendar-check-fill"></i> Bookings</a></li>
+                <li><a href="{{ route('admin.front-desk.index') }}" class="{{ request()->routeIs('admin.front-desk.*') ? 'active' : '' }}"><i class="bi bi-door-open"></i> Front Desk</a></li>
+                <li><a href="{{ route('admin.guests.index') }}" class="{{ request()->routeIs('admin.guests.*') ? 'active' : '' }}"><i class="bi bi-people-fill"></i> Guests</a></li>
+                @if(auth('admin')->user()?->hasFullAccess())
+                <li><a href="{{ route('admin.room-rates.index') }}" class="{{ request()->routeIs('admin.room-rates.*') ? 'active' : '' }}"><i class="bi bi-tags-fill"></i> Pricing Rules</a></li>
+                <li><a href="{{ route('admin.reports.index') }}" class="{{ request()->routeIs('admin.reports.*') ? 'active' : '' }}"><i class="bi bi-bar-chart-fill"></i> Reports</a></li>
                 <li><a href="{{ route('admin.gallery.index') }}" class="{{ request()->routeIs('admin.gallery.*') ? 'active' : '' }}"><i class="bi bi-images"></i> Gallery</a></li>
                 <li><a href="{{ route('admin.facilities.index') }}" class="{{ request()->routeIs('admin.facilities.*') ? 'active' : '' }}"><i class="bi bi-stars"></i> Facilities</a></li>
                 <li><a href="{{ route('admin.testimonials.index') }}" class="{{ request()->routeIs('admin.testimonials.*') ? 'active' : '' }}"><i class="bi bi-chat-quote-fill"></i> Testimonials</a></li>
@@ -35,6 +40,8 @@
                     </a>
                 </li>
                 <li><a href="{{ route('admin.settings.edit') }}" class="{{ request()->routeIs('admin.settings.*') ? 'active' : '' }}"><i class="bi bi-gear-fill"></i> Settings</a></li>
+                <li><a href="{{ route('admin.audit-logs.index') }}" class="{{ request()->routeIs('admin.audit-logs.*') ? 'active' : '' }}"><i class="bi bi-journal-text"></i> Activity Log</a></li>
+                @endif
                 <li><a href="{{ route('admin.profile.edit') }}" class="{{ request()->routeIs('admin.profile.*') ? 'active' : '' }}"><i class="bi bi-person-fill"></i> Profile</a></li>
                 <li><a href="{{ route('home') }}" target="_blank"><i class="bi bi-box-arrow-up-right"></i> View Site</a></li>
                 <li>
@@ -51,10 +58,12 @@
         <main class="main-content">
             <div class="admin-topbar">
                 <h1>@yield('title', 'Dashboard')</h1>
+                @if(auth('admin')->user()?->hasFullAccess())
                 <a href="{{ route('admin.messages.index') }}" class="notification-bell">
                     <i class="bi bi-bell-fill"></i>
                     @if($unreadMessagesCount > 0)<span class="badge-count">{{ $unreadMessagesCount }}</span>@endif
                 </a>
+                @endif
             </div>
 
             @if(session('success'))

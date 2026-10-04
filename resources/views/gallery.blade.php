@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Gallery | Newwoodland Hotel and Lounge')
-@section('meta_description', 'Explore the scenic spaces, elegant rooms, and memorable experiences that await at Newwoodland Hotel and Lounge.')
+@section('title', 'Gallery | Newwoodland Hotel & Lounge')
+@section('meta_description', 'Explore the scenic spaces, elegant rooms, and memorable experiences that await at Newwoodland Hotel & Lounge.')
 @section('canonical', route('gallery'))
 
 @section('content')
@@ -9,7 +9,7 @@
     <div class="container">
         <div class="hero-content">
             <span class="section-subtitle text-warning">Our Gallery</span>
-            <h1 class="font-heading">Moments from Newwoodland Hotel and Lounge</h1>
+            <h1 class="font-heading">Moments from Newwoodland Hotel & Lounge</h1>
             <p class="lead text-white-50 max-w-700 mx-auto mt-3">
                 Explore the scenic spaces, elegant rooms, and memorable experiences that await at our hotel.
             </p>
@@ -25,6 +25,7 @@
             <p class="text-muted">See the welcoming interiors, beautiful dining areas, luxurious rooms, and premium hotel facilities.</p>
         </div>
 
+        @if($images->isNotEmpty())
         <div class="gallery-filters">
             <button type="button" data-filter="all" class="active">All</button>
             <button type="button" data-filter="rooms">Rooms</button>
@@ -32,16 +33,22 @@
             <button type="button" data-filter="restaurant">Restaurant</button>
             <button type="button" data-filter="garden">Garden</button>
         </div>
+        @endif
 
         <div class="row g-4">
             @forelse($images as $image)
             <div class="col-lg-3 col-md-4 col-sm-6 gallery-item" data-category="{{ $image->category }}">
                 <div class="gallery-card overflow-hidden rounded-4 shadow-sm">
-                    <img src="{{ asset('storage/'.$image->path) }}" alt="{{ $image->title ?: 'Newwoodland Hotel and Lounge' }}" class="img-fluid w-100" style="height: 260px; object-fit: cover;">
+                    <img src="{{ asset('storage/'.$image->path) }}" alt="{{ $image->altText() }}" class="img-fluid w-100" style="height: 260px; object-fit: cover;" loading="lazy" decoding="async">
                 </div>
             </div>
             @empty
-            <div class="col-12 text-center text-muted">No gallery images have been added yet.</div>
+            {{-- CLIENT INPUT REQUIRED: genuine hotel photos (Admin → Gallery) --}}
+            <div class="col-12">
+                <div class="photo-frame photo-frame--gallery rounded-4 shadow-sm">
+                    @include('partials.photo-placeholder', ['label' => 'Hotel Gallery', 'icon' => 'bi-images', 'plural' => true])
+                </div>
+            </div>
             @endforelse
         </div>
     </div>

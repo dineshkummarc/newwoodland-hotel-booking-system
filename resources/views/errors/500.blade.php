@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
-    <title>Something Went Wrong | Newwoodland Hotel and Lounge</title>
+    <title>Something Went Wrong | Newwoodland Hotel & Lounge</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -20,7 +20,7 @@
             </p>
             <div class="mt-4 d-flex justify-content-center gap-3 flex-wrap">
                 <a href="/" class="btn-gold py-3 px-5">Return Home</a>
-                <a href="mailto:info@newwoodlandhotel.com" class="btn-outline text-white border-white py-3 px-5">Email Us</a>
+                <a href="mailto:woodlandhotel146@gmail.com" class="btn-outline text-white border-white py-3 px-5">Email Us</a>
             </div>
         </div>
     </section>

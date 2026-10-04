@@ -6,7 +6,9 @@ use App\Http\Requests\Auth\ForgotPasswordRequest;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\ResetPasswordRequest;
+use App\Models\PhoneOtp;
 use App\Models\User;
+use App\Services\PhoneOtpService;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,7 +29,7 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $request->validated('name'),
             'email' => $request->validated('email'),
-            'phone' => $request->validated('phone'),
+            'phone' => $request->e164Phone(),
             'password' => $request->validated('password'),
         ]);
 
@@ -35,7 +37,11 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->route('account.bookings')->with('success', 'Welcome, '.$user->name.'! Your account has been created.');
+        // A phone typed at registration is only a contact number until it is
+        // confirmed by SMS code; say so, or "forgot password by SMS" would
+        // silently never send anything for this account.
+        return redirect()->route('account.bookings')->with('success', 'Welcome, '.$user->name.'! Your account has been created.'
+            .($user->phone ? ' To use your phone number for password recovery, verify it at My Account → Phone Number.' : ''));
     }
 
     public function showLogin()
@@ -75,15 +81,13 @@ class AuthController extends Controller
 
     public function sendResetLink(ForgotPasswordRequest $request)
     {
-        $status = Password::sendResetLink($request->only('email'));
+        // Same response whether the email is unknown, just sent, or still in
+        // the broker's per-account throttle window, so this form can't be
+        // used to discover which emails are registered (as in the admin and
+        // phone recovery flows). Request volume is capped by the route throttle.
+        Password::sendResetLink($request->only('email'));
 
-        if ($status === Password::RESET_LINK_SENT) {
-            return back()->with('success', 'A password reset link has been sent to your email address.');
-        }
-
-        throw ValidationException::withMessages([
-            'email' => __($status),
-        ]);
+        return back()->with('success', 'If an account exists for that email address, we have sent it a password reset link.');
     }
 
     public function showResetPassword(Request $request, string $token)
@@ -94,15 +98,18 @@ class AuthController extends Controller
         ]);
     }
 
-    public function resetPassword(ResetPasswordRequest $request)
+    public function resetPassword(ResetPasswordRequest $request, PhoneOtpService $otps)
     {
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
-            function (User $user, string $password) {
+            function (User $user, string $password) use ($otps) {
                 $user->forceFill([
                     'password' => Hash::make($password),
                     'remember_token' => Str::random(60),
                 ])->save();
+
+                // Any outstanding SMS reset code for this account is now stale too.
+                $otps->invalidateForUser($user, PhoneOtp::PURPOSE_PASSWORD_RESET);
 
                 event(new PasswordReset($user));
             }
@@ -112,8 +119,10 @@ class AuthController extends Controller
             return redirect()->route('login')->with('success', 'Your password has been reset. You can now sign in.');
         }
 
+        // One message for unknown email, bad or expired token alike, so a
+        // forged token can't be used to probe which emails are registered.
         throw ValidationException::withMessages([
-            'email' => __($status),
+            'email' => 'This password reset link is invalid or has expired. Please request a new one.',
         ]);
     }
 }

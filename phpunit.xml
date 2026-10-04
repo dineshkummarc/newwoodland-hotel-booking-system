@@ -32,5 +32,19 @@
         <env name="PULSE_ENABLED" value="false"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="NIGHTWATCH_ENABLED" value="false"/>
+        <!-- Payment methods default to off/unconfigured under test, whatever is in a developer's local .env. -->
+        <env name="KHALTI_ENABLED" value="(false)"/>
+        <env name="KHALTI_SECRET_KEY" value=""/>
+        <env name="FONEPAY_ENABLED" value="(false)"/>
+        <env name="FONEPAY_MERCHANT_CODE" value=""/>
+        <env name="FONEPAY_SECRET_KEY" value=""/>
+        <env name="BANK_TRANSFER_ENABLED" value="(false)"/>
+        <env name="BANK_TRANSFER_ACCOUNT_NAME" value=""/>
+        <env name="BANK_TRANSFER_ACCOUNT_NUMBER" value=""/>
+        <!-- SMS is captured in memory (App\Services\Sms\ArraySmsSender), never sent. -->
+        <env name="SMS_DRIVER" value="array"/>
+        <env name="SMS_DEFAULT_REGION" value="NP"/>
+        <env name="SPARROW_SMS_TOKEN" value=""/>
+        <env name="SPARROW_SMS_FROM" value=""/>
     </php>
 </phpunit>
