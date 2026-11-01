@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Schema;
 use App\Contracts\SmsSenderInterface;
 use App\Services\Sms\ArraySmsSender;
 use App\Services\Sms\LogSmsSender;
@@ -42,6 +43,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+		Schema::defaultStringLength(191);
         // A production site served over HTTPS generates https:// links and
         // redirects even if a request reached PHP as plain HTTP from a proxy.
         // (Detecting HTTPS on incoming requests — for secure cookies, HSTS
